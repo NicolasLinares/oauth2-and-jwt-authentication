@@ -6,7 +6,7 @@
     "scripts": {
         "eslint:config": "npm init @eslint/config",
         "lint": "eslint src",
-        "dev": "nodemon src/index.js",
+        "dev": "nodemon --trace-uncaught src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -20,14 +20,14 @@
     },
     "homepage": "https://github.com/NicolasLinares/ExpressBackend#readme",
     "devDependencies": {
-        "eslint": "8.13.0",
-        "nodemon": "2.0.15",
-        "standard": "16.0.4"
+        "eslint": "7.32.0",
+        "eslint-config-standard": "16.0.3",
+        "eslint-plugin-import": "2.26.0",
+        "eslint-plugin-node": "11.1.0",
+        "eslint-plugin-promise": "5.2.0",
+        "nodemon": "2.0.15"
     },
     "dependencies": {
         "express": "4.17.3"
-    },
-    "eslintConfig": {
-        "extends": "./node_modules/standard/eslintrc.json"
     }
 }
