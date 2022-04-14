@@ -1,6 +1,7 @@
 const express = require('express')
 const requestLogger = require("./middlewares/requestLogger")
 const notFoundResponse = require("./middlewares/404")
+const logger = require("./utils/log/logger")
 
 const app = express()
 
@@ -16,5 +17,5 @@ app.use(notFoundResponse)
 
 const PORT = 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+    logger.info(`Server running on port ${PORT}`)
 })
