@@ -1,4 +1,4 @@
-const logger = require("../utils/log/logger")
+const logger = require("../utils/log/")
 
 const notFoundStatus = 404;
 

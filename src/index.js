@@ -1,21 +1,44 @@
-const express = require('express')
-const requestLogger = require("./middlewares/requestLogger")
-const notFoundResponse = require("./middlewares/404")
-const logger = require("./utils/log/logger")
+const dotenv = require("dotenv").config();
+const logger = require("./utils/log/")
+const database = require("./database")
 
-const app = express()
+logger.info("Deploying server...")
 
-// Middleware 
-app.use(requestLogger);
+database.connect()
+    .then(() => {
+        logger.info("Database succesfully connected")
 
-app.get('/', (request, response) => {
-    response.send('<h1> Hello world! </h1>')
-})
+        const express = require("express")
+        const requestLogger = require("./middlewares/requestLogger")
+        const notFoundResponse = require("./middlewares/404")
+        const app = express()
 
-// Middleware 
-app.use(notFoundResponse)
+        // Middleware 
+        app.use(requestLogger);
 
-const PORT = 3001
-app.listen(PORT, () => {
-    logger.info(`Server running on port ${PORT}`)
-})
+        app.get('/', (request, response) => {
+            response.send('<h1> Hello world! </h1>')
+        })
+
+        app.get('/users', (request, response) => {
+            database.getUsers()
+                .then(result => {
+                    response.contentType = "application/json"
+                    response.send(result)
+                })
+                .catch(err => {
+                    logger.error(err)
+                })
+        })
+
+        // Middleware 
+        app.use(notFoundResponse)
+
+        const PORT = process.env.SERVER_PORT
+        app.listen(PORT, () => {
+            logger.info(`Server running on port ${PORT}`)
+        })
+
+    }).catch((err) => {
+        logger.error(err)
+    })
