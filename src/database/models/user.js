@@ -1,8 +1,8 @@
 const { Schema, model } = require("mongoose")
 
 const UserSchema = new Schema({
-    name: String,
-    username: String,
+    name: { type: String },
+    username: { type: String },
     password: { type: String, select: false }
 })
 
@@ -25,6 +25,11 @@ UserSchema.pre('save', function(next) {
         }
     });
 })
+
+UserSchema.pre('findOneAndUpdate', function(next) {
+    this.options.runValidators = true;
+    next();
+});
 
 const User = model('User', UserSchema)
 

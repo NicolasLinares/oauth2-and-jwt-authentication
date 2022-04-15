@@ -1,7 +1,6 @@
 require("dotenv").config();
 const logger = require("./utils/log/")
 const database = require("./database");
-const res = require("express/lib/response");
 
 logger.info("Deploying server...")
 
@@ -28,10 +27,9 @@ database.connect()
             response.send('<h1> Hello world! </h1>')
         })
 
-        app.get('/api/users/:username', (request, response) => {
-            const username = request.params.username
-
-            database.getUser(username)
+        app.get('/api/users/:id', (request, response) => {
+            const id = request.params.id
+            database.getUser(id)
                 .then(user => {
                     httpResponse[httpStatus.OK](response, user)
                 })
@@ -40,10 +38,21 @@ database.connect()
                 })
         })
 
-        app.delete('/api/users/:username', (request, response) => {
-            const username = request.params.username
+        app.put('/api/users/:id', jsonParser, (request, response) => {
+            const id = request.params.id
+            const update = request.body
+            database.updateUser(id, update)
+                .then((updatedUser) => {
+                    httpResponse[httpStatus.OK](response, updatedUser)
+                })
+                .catch(err => {
+                    httpResponse[httpStatus.CONFLICT](response, err)
+                })
+        })
 
-            database.deleteUser(username)
+        app.delete('/api/users/:id', (request, response) => {
+            const id = request.params.id
+            database.deleteUser(id)
                 .then(() => {
                     httpResponse[httpStatus.NO_CONTENT](response)
                 })

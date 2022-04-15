@@ -30,29 +30,41 @@ function MongoDB() {
         mongoose.connection.close();
     }
 
-    this.getUser = (username) => {
-        if (!username) {
-            throw "username cannot be null or undefined"
+    this.getUser = (id) => {
+        if (!id) {
+            throw "id cannot be null or undefined"
         }
 
-        return User.findOne({ username: username })
+        return User.findById(id)
             .then((user) => {
                 return user
             })
     }
 
-    this.deleteUser = (username) => {
-        if (!username) {
-            throw "username cannot be null or undefined"
+    this.deleteUser = (id) => {
+        if (!id) {
+            throw "id cannot be null or undefined"
         }
 
-        return User.findOneAndDelete({ username: username })
+        return User.findByIdAndDelete(id)
             .then((deletedUser) => {
                 if (!deletedUser) {
-                    throw `User "${username}" does not exists`
+                    throw `User not found`
                 }
-                logger.info(`User "${username}" succesfully deleted`)
+                logger.info(`User with id "${id}" succesfully deleted`)
                 return deletedUser
+            })
+    }
+
+    this.updateUser = (id, updateFields) => {
+        if (!id) {
+            throw "id cannot be null or undefined"
+        }
+
+        return User.findByIdAndUpdate(id, updateFields, { new: true })
+            .then((updatedUser) => {
+                logger.info(`User with id "${id}" succesfully updated`)
+                return updatedUser
             })
     }
 
@@ -73,7 +85,7 @@ function MongoDB() {
 
         return newUser.save()
             .then((savedUser) => {
-                logger.info(`User "${savedUser.username}" succesfully created`)
+                logger.info(`User with id "${savedUser.id}" succesfully created`)
                 return savedUser
             })
     }
