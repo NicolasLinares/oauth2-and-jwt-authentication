@@ -3,6 +3,7 @@ function MongoDB() {
     const mongoose = require("mongoose")
     const logger = require("../utils/log/")
     const User = require("./models/user")
+    const bcrypt = require("bcrypt")
 
     const connectionString = process.env.DB_CONNECTION_STRING
 
@@ -68,7 +69,7 @@ function MongoDB() {
             })
     }
 
-    this.addUser = (user) => {
+    this.addUser = async(user) => {
         if (!user) {
             throw "user cannot be null or undefined"
         }
@@ -77,10 +78,13 @@ function MongoDB() {
             throw "user fields cannot be null or undefined"
         }
 
+        const saltRounds = 10
+        const passwordHashed = await bcrypt.hash(password, saltRounds)
+
         const newUser = new User({
             name: name,
             username: username,
-            password: password,
+            passwordHash: passwordHashed,
         })
 
         return newUser.save()
