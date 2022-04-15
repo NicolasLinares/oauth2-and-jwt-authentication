@@ -1,7 +1,6 @@
 # ExpressBackend
 
-Basic Express backend ready to be used for any project.
-
+Express + MongoDB 
 
 ## Quick start:
 
