@@ -1,0 +1,15 @@
+PUT http://localhost:3001/api/users/62588394c57513621f3dfa25
+Content-Type: application/json
+
+{
+    "name": "Nicolás"
+}
+
+###
+
+PUT http://localhost:3001/api/users/62588394c57513621f3dfa25
+Content-Type: application/json
+
+{
+    "noexiste": "hola"
+}
