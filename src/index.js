@@ -9,6 +9,7 @@ var httpResponse = require("./utils/responses")
 var httpStatus = require("./utils/constants")
 var path = require("path")
 
+const authController = require("./controllers/auth")
 const userController = require("./controllers/users")
 
 logger.info("Deploying server...")
@@ -23,6 +24,8 @@ database.connect()
         app.use(requestLogger);
 
         app.use(express.static(path.join(__dirname, '../public')))
+
+        app.get("/oauth/redirect", authController.oauth2.github);
 
         app.post('/api/users', jsonParser, userController.createUser)
         app.get('/api/users', userController.getAllUsers)
