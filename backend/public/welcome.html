@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Hello</title>
+</head>
+
+<body></body>
+<script>
+    // We can get the token from the "access_token" query
+    // param, available in the browsers "location" global
+    const query = window.location.search.substring(1);
+    const token = query.split("access_token=")[1];
+
+    // Call the user info API using the fetch browser library
+    fetch("https://api.github.com/user", {
+            headers: {
+                // This header informs the Github API about the API version
+                Accept: "application/vnd.github.v3+json",
+                // Include the token in the Authorization header
+                Authorization: "token " + token,
+            },
+        })
+        // Parse the response as JSON
+        .then((res) => res.json())
+        .then((res) => {
+            const nameNode = document.createTextNode(`Welcome, ${res.login}`);
+            document.body.appendChild(nameNode);
+        });
+</script>
+
+</html>
