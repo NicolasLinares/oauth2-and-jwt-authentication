@@ -2,29 +2,32 @@ import { CONST } from "config"
 
 
 export const redirectToGithubLogin = () => {
-    console.log("Start with GitHub...")
-    let timer = null
     const githubLoginURL = CONST.env.API_HOST + "/login/github"
-    const newWindow = window.open(githubLoginURL, "_blank")
+    window.location = githubLoginURL
+ 
+    // let timer = null
 
-    newWindow.addEventListener("load", (e) => {
-        let { location } = e.target
-        let href = location.href
-        if (href && href == "http://localhost:3000/login/success") {
-            newWindow.close()
-        }
-    })
+    // const currentWindow = window.self
+    // const authWindow = window.open(githubLoginURL, "_blank")
 
-    if (newWindow) {
-        timer = setInterval(() => {
-            if (newWindow.closed) {
-                console.log("User close auth window")
-                // fetchUser
-                if (timer) {
-                    clearInterval(timer)
-                }
-            }
-        }, 500)
-    }
+    // authWindow.addEventListener("load", (e) => {
+    //     let { location } = e.target
+    //     let href = location.href
+    //     if (href && href == "http://localhost:3000/login/success") {
+    //         authWindow.close()
+    //         currentWindow.location = href
+    //     }
+    // })
+
+    // if (authWindow) {
+    //     timer = setInterval(() => {
+    //         if (authWindow.closed) {
+    //             console.log("User close auth window")
+    //             if (timer) {
+    //                 clearInterval(timer)
+    //             }
+    //         }
+    //     }, 500)
+    // }
 
 }
