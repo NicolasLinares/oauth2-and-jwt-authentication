@@ -69,7 +69,7 @@ function MongoDB() {
             })
     }
 
-    this.addUser = async(user) => {
+    this.addUser = async (user) => {
         if (!user) {
             throw "user cannot be null or undefined"
         }
@@ -90,6 +90,43 @@ function MongoDB() {
         return newUser.save()
             .then((savedUser) => {
                 logger.info(`User with id "${savedUser.id}" succesfully created`)
+                return savedUser
+            })
+    }
+
+    this.getGithubUser = (github_id) => {
+        if (!github_id) {
+            throw "github_id cannot be null or undefined"
+        }
+
+        return User.findOne({github_id: github_id})
+            .then((user) => {
+                return user
+            })
+    }
+
+    this.addGithubUser = async (user) => {
+        
+        if (!user) {
+            throw "user cannot be null or undefined"
+        }
+        
+        let { id, login, name, email } = user
+
+        if (!id || !login || !email) {
+            throw "user fields cannot be null or undefined"
+        }
+
+        const newUser = new User({
+            github_id: id,
+            github_login: login,
+            github_name: name,
+            github_email: email
+        })
+
+        return newUser.save()
+            .then((savedUser) => {
+                logger.info(`User "${savedUser.github_login}" succesfully created`)
                 return savedUser
             })
     }
