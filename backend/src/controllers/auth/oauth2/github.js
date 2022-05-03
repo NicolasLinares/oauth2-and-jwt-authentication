@@ -24,7 +24,6 @@ function GithubAuthManager() {
     // Second: With the request token, client id and client secret we finally get the access token
     this.getAccessToken = (request, response) => {
         let { code } = request.query
-
         getTokenFromGithub(code)
         .then(getUserFromGithub)
         .then(addUserIfNotExists)

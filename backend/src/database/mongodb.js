@@ -2,7 +2,7 @@ function MongoDB() {
 
     const mongoose = require("mongoose")
     const logger = require("../utils/log/")
-    const User = require("./models/user")
+    const User = require("../models/user")
     const bcrypt = require("bcrypt")
 
     const connectionString = process.env.DB_CONNECTION_STRING

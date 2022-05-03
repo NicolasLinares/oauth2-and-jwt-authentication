@@ -41,7 +41,7 @@ function UserController() {
     this.getAllUsers = (request, response) => {
         database.getUsers()
             .then(users => {
-                response.json(users)
+                httpResponse[httpStatus.OK](response, users)
             })
             .catch(err => {
                 httpResponse[httpStatus.NOT_FOUND](response, err)

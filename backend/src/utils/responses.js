@@ -1,5 +1,4 @@
 const httpStatus = require("./constants")
-const logger = require("./log")
 
 const httpResponse = []
 httpResponse[httpStatus.OK] = (response, resource) => {
@@ -15,17 +14,14 @@ httpResponse[httpStatus.CREATED] = (response, resource) => {
 }
 httpResponse[httpStatus.NOT_FOUND] = (response, msg = null) => {
     let message = msg || `${httpStatus.NOT_FOUND} Not found`
-    logger.error(message)
     return response.status(httpStatus.NOT_FOUND).json({ error: message })
 }
 httpResponse[httpStatus.BAD_REQUEST] = (response, msg = null) => {
     let message = msg || `${httpStatus.BAD_REQUEST} Bad request`
-    logger.error(message)
     return response.status(httpStatus.BAD_REQUEST).json({ error: message })
 }
 httpResponse[httpStatus.CONFLICT] = (response, msg = null) => {
     let message = msg || `${httpStatus.CONFLICT} Conflict`
-    logger.error(message)
     return response.status(httpStatus.CONFLICT).json({ error: message })
 }
 

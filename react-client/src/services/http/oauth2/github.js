@@ -2,7 +2,7 @@ import { CONST } from "config"
 
 
 export const redirectToGithubLogin = () => {
-    const githubLoginURL = CONST.env.API_HOST + "/login/github"
+    const githubLoginURL = CONST.env.API_HOST + "/api/v1/login/github"
     window.location = githubLoginURL
  
     // let timer = null
