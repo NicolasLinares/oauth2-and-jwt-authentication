@@ -2,17 +2,18 @@ import React from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import "./loginForm.css"
+import { CONST } from "config"
 import { authController, usersController } from "services/http"
 
 function LoginForm(props) {
     let startWithGitHub = function (e) {
         e.preventDefault()
-        authController.startWithGitHub()
+        authController.startWith(CONST.uri.provider.GITHUB, usersController.fetchUser)
     }
 
     let startWithGoogle = function (e) {
         e.preventDefault()
-        authController.startWithGoogle()
+        authController.startWith(CONST.uri.provider.GOOGLE, usersController.fetchUser)
     }
 
     let getAllUsers = function (e) {
@@ -56,12 +57,6 @@ function LoginForm(props) {
                 <span>
                     Continue with Google
                 </span>
-            </button>
-            <button className='btn btn-primary shadow mt-2 p-3 d-flex justify-content-center' onClick={getAllUsers}>
-                <i className="bi bi-facebook mx-2"></i>
-                <span>
-                    Continue with Facebook
-                </span>                
             </button>
 
             <p className='mt-4'>

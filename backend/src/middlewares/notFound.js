@@ -1,8 +1,8 @@
 var httpResponse = require("../utils/responses")
-var httpStatus = require("../utils/constants")
+const CONST = require("../utils/constants")
 
 function notFound(request, response, next) {
-	httpResponse[httpStatus.NOT_FOUND](response)
+	httpResponse[CONST.httpStatus.NOT_FOUND](response)
 	next("404 Not found")
 }
 

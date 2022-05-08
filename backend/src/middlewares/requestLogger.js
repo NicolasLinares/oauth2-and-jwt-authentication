@@ -1,4 +1,4 @@
-const logger = require("../utils/log/")
+const logger = require("../services/log")
 
 function requestLogger (request, response, next) {
     let importantData = request.method

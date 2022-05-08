@@ -1,4 +1,4 @@
-const logger = require("../utils/log")
+const logger = require("../services/log")
 
 function errorHandler(error, request, response, next) {
 

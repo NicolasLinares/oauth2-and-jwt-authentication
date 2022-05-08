@@ -1,6 +1,6 @@
-const database = require("../../database");
-var httpResponse = require("../../utils/responses")
-var httpStatus = require("../../utils/constants")
+const database = require("../services/database");
+var httpResponse = require("../utils/responses")
+const CONST = require("../utils/constants")
 
 function UserController() {
 
@@ -8,10 +8,10 @@ function UserController() {
         const id = request.params.id
         database.getUser(id)
             .then(user => {
-                httpResponse[httpStatus.OK](response, user)
+                httpResponse[CONST.httpStatus.OK](response, user)
             })
             .catch(err => {
-                httpResponse[httpStatus.NOT_FOUND](response, err)
+                httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
             })
     }
 
@@ -20,10 +20,10 @@ function UserController() {
         const update = request.body
         database.updateUser(id, update)
             .then((updatedUser) => {
-                httpResponse[httpStatus.OK](response, updatedUser)
+                httpResponse[CONST.httpStatus.OK](response, updatedUser)
             })
             .catch(err => {
-                httpResponse[httpStatus.CONFLICT](response, err)
+                httpResponse[CONST.httpStatus.CONFLICT](response, err)
             })
     }
 
@@ -31,20 +31,20 @@ function UserController() {
         const id = request.params.id
         database.deleteUser(id)
             .then(() => {
-                httpResponse[httpStatus.NO_CONTENT](response)
+                httpResponse[CONST.httpStatus.NO_CONTENT](response)
             })
             .catch(err => {
-                httpResponse[httpStatus.CONFLICT](response, err)
+                httpResponse[CONST.httpStatus.CONFLICT](response, err)
             })
     }
 
     this.getAllUsers = (request, response) => {
         database.getUsers()
             .then(users => {
-                httpResponse[httpStatus.OK](response, users)
+                httpResponse[CONST.httpStatus.OK](response, users)
             })
             .catch(err => {
-                httpResponse[httpStatus.NOT_FOUND](response, err)
+                httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
             })
     }
 
@@ -52,21 +52,21 @@ function UserController() {
         const user = request.body
 
         if (!user.name) {
-            return httpResponse[httpStatus.BAD_REQUEST](response, "required 'name' field is missing")
+            return httpResponse[CONST.httpStatus.BAD_REQUEST](response, "required 'name' field is missing")
         }
         if (!user.username) {
-            return httpResponse[httpStatus.BAD_REQUEST](response, "required 'username' field is missing")
+            return httpResponse[CONST.httpStatus.BAD_REQUEST](response, "required 'username' field is missing")
         }
         if (!user.password) {
-            return httpResponse[httpStatus.BAD_REQUEST](response, "required 'password' field is missing")
+            return httpResponse[CONST.httpStatus.BAD_REQUEST](response, "required 'password' field is missing")
         }
 
         database.addUser(user)
             .then((savedUser) => {
-                httpResponse[httpStatus.CREATED](response, savedUser)
+                httpResponse[CONST.httpStatus.CREATED](response, savedUser)
             })
             .catch(err => {
-                httpResponse[httpStatus.CONFLICT](response, err.message)
+                httpResponse[CONST.httpStatus.CONFLICT](response, err.message)
             })
     }
 
