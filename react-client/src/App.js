@@ -1,4 +1,4 @@
-import { LoginPage, HomePage } from 'views'
+import { LoginPage, HomePage, SuccessLoginPage } from 'views'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
@@ -9,6 +9,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<LoginPage/>} />
                 <Route path="home" element={<HomePage/>} />
+                <Route path="login/success" element={<SuccessLoginPage/>} />
+
             </Routes>
         </BrowserRouter>
     )

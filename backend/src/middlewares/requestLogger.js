@@ -1,9 +1,9 @@
-const logger = require("../utils/log/")
+const logger = require("../services/log")
 
-const requestLogger = (request, response, next) => {
+function requestLogger (request, response, next) {
     let importantData = request.method
     importantData += ' ' + request.path
-    importantData += request.body ? ' ' + request.body : ""
+    importantData += request.body && ""
     logger.debug(`request [${importantData}]`)
     next()
 }
