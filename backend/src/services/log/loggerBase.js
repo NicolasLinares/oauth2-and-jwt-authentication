@@ -4,6 +4,7 @@ function LoggerBase() {
         INFO: "info",
         WARN: "warn",
         ERROR: "error",
+        TRACE: "trace"
     }
 
     this.debug = () => {
@@ -16,6 +17,10 @@ function LoggerBase() {
         throw "Not implemented"
     }
     this.error = () => {
+        throw "Not implemented"
+    }
+
+    this.trace = () => {
         throw "Not implemented"
     }
 

@@ -5,6 +5,9 @@ const UserSchema = new Schema({
     fullname: { type: String },
     password: { type: String, select: false },
     email: { type: String },
+    providers: { type : Array , default: [] },
+    updated: { type: Date, default: Date.now },
+    created: { type: Date, default: Date.now }
 })
 
 UserSchema.set('toJSON', {

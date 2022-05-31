@@ -19,6 +19,10 @@ function Logger() {
     this.error = (text) => {
         logger.error(text)
     }
+
+    this.trace = (text) => {
+        logger.trace(text)
+    }
 }
 
 module.exports = Logger

@@ -21,21 +21,21 @@ function AuthController() {
                 }
                 return existsUser
             }).then(savedUser => {
-                return database.getExternalUser(savedUser.id, user.provider)
-                    .then(existsUser => {
-                        if (!existsUser) {
-                            let newExternalUser = {
-                                userId: savedUser.id,
-                                loginName: user.login || "",
-                                providerUserId: user.id,
-                                providerName: user.provider,
-                                picture: user.picture || ""
-                            }
-                            logger.info("Creating new external user...")
-                            return database.addExternalUser(newExternalUser)
-                        }
-                        return existsUser
-                    })
+                let { providers } = savedUser
+
+                let existsExternalUser = providers.find(o => o.providerUserId == user.id && o.providerName == user.provider)
+                if (!existsExternalUser) {
+                    let newExternalUser = {
+                        userId: savedUser.id,
+                        loginName: user.login || "",
+                        providerUserId: user.id,
+                        providerName: user.provider,
+                        picture: user.picture || ""
+                    }
+                    logger.info("Creating new external user...")
+                    return database.addProviderUser(newExternalUser)
+                }
+                return existsExternalUser
             })
     }
 }

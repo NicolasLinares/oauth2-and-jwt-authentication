@@ -26,4 +26,10 @@ ConsoleLogger.error = (text) => {
     console.error(logEntry)
 }
 
+ConsoleLogger.trace = (text) => {
+    that = ConsoleLogger
+    let logEntry = that.buildLogEntry(that.level.TRACE, text)
+    console.log(logEntry)
+}
+
 module.exports = ConsoleLogger

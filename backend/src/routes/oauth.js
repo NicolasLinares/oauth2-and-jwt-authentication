@@ -9,16 +9,18 @@ passport.use(strategy.googleProvider)
 
 
 passport.serializeUser((user, cb) => {
-	cb(null, user.id)
+	cb(null, user.providerUserId)
 })
 
 passport.deserializeUser(async (id, cb) => {
-	const user = await database.getExternalUserById(id)
+	const user = await database.getUserByProviderId(id)
 		.catch(err => {
 			cb(err, null);
 		})
 
-	if (user) cb(null, user);
+	if (user) {
+		cb(null, user);
+	}
 })
 
 
@@ -33,7 +35,6 @@ router.get("/oauth/github/callback",
 		successRedirect: successLoginUrl,
 	}),
 	function (req, res) {
-		console.log("Github User: ", req.user);
 		res.send("Thank you for signing in!");
 	}
 )
@@ -46,7 +47,6 @@ router.get("/oauth/google/callback",
 		successRedirect: successLoginUrl,
 	}),
 	(req, res) => {
-		console.log("Google User: ", req.user);
 		res.send("Thank you for signing in!");
 	}
 )
