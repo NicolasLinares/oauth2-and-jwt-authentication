@@ -5,7 +5,6 @@ function MongoDB() {
     const bcrypt = require("bcrypt")
     
     const User = require("../../models/user")
-    const ExternalUser = require("../../models/externalUser")
 
 
     const connectionString = process.env.DB_CONNECTION_STRING
@@ -112,29 +111,17 @@ function MongoDB() {
             })
     }
 
-    this.getExternalUserById = (id) => {
-        if (!id) {
-            throw "id cannot be null or undefined"
+    this.getUserByProviderId = (providerUserId) => {
+        if (!providerUserId) {
+            throw "providerUserId cannot be null or undefined"
         }
-
-        return ExternalUser.findById(id)
+        return User.findOne({providerUserId: providerUserId})
             .then((user) => {
                 return user?.toJSON()
             })
     }
 
-    this.getExternalUser = (userId, provider) => {
-        if (!userId || !provider) {
-            throw "id cannot be null or undefined"
-        }
-
-        return ExternalUser.findOne({userId: userId, providerName: provider})
-            .then((user) => {
-                return user?.toJSON()
-            })
-    }
-
-    this.addExternalUser = async (user) => {
+    this.addProviderUser = async (user) => {
         if (!user) {
             throw "user cannot be null or undefined"
         }
@@ -150,23 +137,32 @@ function MongoDB() {
             throw "providerName fields cannot be null or undefined"
         }
 
-        const newExternalUser = new ExternalUser({
-            userId: userId,
-            providerUserId: providerUserId,
-            providerName: providerName,
-            loginName: loginName || "",
-            picture: picture || ""
-        })
-
-        console.log(newExternalUser.toJSON())
-
-        return newExternalUser.save()
+        return User.findByIdAndUpdate(userId, 
+            {$push: { 
+                providers: {
+                    providerUserId: providerUserId,
+                    providerName: providerName,
+                    loginName: loginName,
+                    picture: picture
+                }
+            }},
+            { new : true })
             .then((savedUser) => {
-                logger.info(`User succesfully registered from ${savedUser.providerName} OAuth 2.0`)
+                logger.info(`User succesfully registered from ${providerName} OAuth 2.0`)
                 return savedUser?.toJSON()
             })
     }
 
+    this.getProviderUser = (userId, provider) => {
+        if (!userId || !provider) {
+            throw "id cannot be null or undefined"
+        }
+
+        return User.findById(userId)
+            .then((user) => {
+                return user?.toJSON()
+            })
+    }
 
     this.getUsers = () => {
         return User.find({})
