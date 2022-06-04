@@ -1,12 +1,12 @@
-const database = require("../services/database");
-var httpResponse = require("../utils/responses")
 const CONST = require("../utils/constants")
+var httpResponse = require("../utils/responses")
+const userManager = require("../managers/userManager")
 
 function UserController() {
 
     this.getUserById = (request, response) => {
         const id = request.params.id
-        database.getUser(id)
+        userManager.getUser(id)
             .then(user => {
                 httpResponse[CONST.httpStatus.OK](response, user)
             })
@@ -18,7 +18,7 @@ function UserController() {
     this.updateUserById = (request, response) => {
         const id = request.params.id
         const update = request.body
-        database.updateUser(id, update)
+        userManager.updateUser(id, update)
             .then((updatedUser) => {
                 httpResponse[CONST.httpStatus.OK](response, updatedUser)
             })
@@ -29,7 +29,7 @@ function UserController() {
 
     this.deleteUserById = (request, response) => {
         const id = request.params.id
-        database.deleteUser(id)
+        userManager.deleteUser(id)
             .then(() => {
                 httpResponse[CONST.httpStatus.NO_CONTENT](response)
             })
@@ -39,7 +39,7 @@ function UserController() {
     }
 
     this.getAllUsers = (request, response) => {
-        database.getUsers()
+        userManager.getUsers()
             .then(users => {
                 httpResponse[CONST.httpStatus.OK](response, users)
             })
@@ -51,17 +51,7 @@ function UserController() {
     this.createUser = (request, response) => {
         const user = request.body
 
-        if (!user.name) {
-            return httpResponse[CONST.httpStatus.BAD_REQUEST](response, "required 'name' field is missing")
-        }
-        if (!user.username) {
-            return httpResponse[CONST.httpStatus.BAD_REQUEST](response, "required 'username' field is missing")
-        }
-        if (!user.password) {
-            return httpResponse[CONST.httpStatus.BAD_REQUEST](response, "required 'password' field is missing")
-        }
-
-        database.addUser(user)
+        userManager.addUser(user)
             .then((savedUser) => {
                 httpResponse[CONST.httpStatus.CREATED](response, savedUser)
             })

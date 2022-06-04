@@ -18,6 +18,16 @@ UserSchema.set('toJSON', {
     }
 })
 
+UserSchema.set('toPublicData', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id
+        returnedObject.fullname = "test"
+        delete returnedObject.providers
+        delete returnedObject._id
+        delete returnedObject.__v
+    }
+})
+
 UserSchema.pre('save', function(next) {
     let User = model('User', UserSchema)
     User.find({ email: this.email }, function(err, docs) {

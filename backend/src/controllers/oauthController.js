@@ -1,41 +1,31 @@
-const database = require("../services/database")
+
+const userManager = require("../managers/userManager")
 const logger = require("../services/log")
 
 function AuthController() {
 
     this.getUserSession = (request, response) => {
-        response.json(request.user)
-    }
-
-    this.findOrCreate = (user) => {
-
-        return database.getUserByEmail(user.email)
-            .then(existsUser => {
-                if (!existsUser) {
-                    let newUser = {
-                        fullname: user.name,
-                        email: user.email,
-                    }
-                    logger.info("Creating new user...")
-                    return database.addUser(newUser)
+        let providerUserData = request.user
+        userManager.getUserByProviderId(providerUserData.providerUserId)
+            .then((fullUserData) => {
+                return userManager.updateUserById(fullUserData.id, { updated: Date.now() })
+            })
+            .then((fullUserData) => {                
+                const publicUserInfo = {
+                    id: fullUserData.id,
+                    fullname: fullUserData.fullname,
+                    email: fullUserData.email,
+                    providerName: providerUserData.providerName,
+                    loginName: providerUserData.loginName,
+                    picture: providerUserData.picture,
+                    updated: fullUserData.updated,
+                    created: fullUserData.created
                 }
-                return existsUser
-            }).then(savedUser => {
-                let { providers } = savedUser
-
-                let existsExternalUser = providers.find(o => o.providerUserId == user.id && o.providerName == user.provider)
-                if (!existsExternalUser) {
-                    let newExternalUser = {
-                        userId: savedUser.id,
-                        loginName: user.login || "",
-                        providerUserId: user.id,
-                        providerName: user.provider,
-                        picture: user.picture || ""
-                    }
-                    logger.info("Creating new external user...")
-                    return database.addProviderUser(newExternalUser)
-                }
-                return existsExternalUser
+                logger.info(`User with id "${fullUserData.id}" started session [${request.sessionID}]`)
+                response.json(publicUserInfo)
+            })
+            .catch((error) => {
+                logger.error(error)
             })
     }
 }

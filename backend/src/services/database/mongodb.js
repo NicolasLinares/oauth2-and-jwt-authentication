@@ -58,7 +58,6 @@ function MongoDB() {
                 if (!deletedUser) {
                     throw `User not found`
                 }
-                logger.info(`User with id "${id}" succesfully deleted`)
                 return deletedUser?.toJSON()
             })
     }
@@ -70,7 +69,6 @@ function MongoDB() {
 
         return User.findByIdAndUpdate(id, updateFields, { new: true })
             .then((updatedUser) => {
-                logger.info(`User with id "${id}" succesfully updated`)
                 return updatedUser?.toJSON()
             })
     }
@@ -115,7 +113,7 @@ function MongoDB() {
         if (!providerUserId) {
             throw "providerUserId cannot be null or undefined"
         }
-        return User.findOne({providerUserId: providerUserId})
+        return User.findOne({ "providers.providerUserId" : providerUserId })
             .then((user) => {
                 return user?.toJSON()
             })
@@ -148,7 +146,6 @@ function MongoDB() {
             }},
             { new : true })
             .then((savedUser) => {
-                logger.info(`User succesfully registered from ${providerName} OAuth 2.0`)
                 return savedUser?.toJSON()
             })
     }

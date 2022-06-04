@@ -1,6 +1,6 @@
 const GitHubStrategy = require("passport-github").Strategy
 const logger = require("../log")
-const authController = require("../../controllers/oauthController")
+const userManager = require("../../managers/userManager")
 
 const githubProvider = new GitHubStrategy(
 	{
@@ -17,7 +17,7 @@ const githubProvider = new GitHubStrategy(
 			picture: profile.photos[0]?.value || null,
 			provider: profile.provider 
 		}
-		const user = await authController.findOrCreate(userProfile)
+		const user = await userManager.findOrCreate(userProfile)
 			.catch((error) => {
 				logger.error(error);
 				cb(error, null);

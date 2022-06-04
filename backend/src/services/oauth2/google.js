@@ -1,7 +1,7 @@
 
 const GoogleStrategy = require("passport-google-oauth20").Strategy
 const logger = require("../log")
-const authController = require("../../controllers/oauthController")
+const userManager = require("../../managers/userManager")
 
 const googleProvider = new GoogleStrategy(
 	{
@@ -19,7 +19,7 @@ const googleProvider = new GoogleStrategy(
 			picture: profile.photos[0]?.value || null,
 			provider: profile.provider 
 		}
-		const user = await authController.findOrCreate(userProfile)
+		const user = await userManager.findOrCreate(userProfile)
 			.catch((error) => {
 				logger.error(error);
 				cb(error, null);
