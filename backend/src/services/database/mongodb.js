@@ -37,7 +37,7 @@ function MongoDB() {
         mongoose.connection.close();
     }
 
-    this.getUser = (id) => {
+    this.getUserById = (id) => {
         if (!id) {
             throw "id cannot be null or undefined"
         }

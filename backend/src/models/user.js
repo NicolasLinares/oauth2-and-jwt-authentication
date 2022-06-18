@@ -3,7 +3,7 @@ const { Schema, model, ObjectId } = require("mongoose")
 const UserSchema = new Schema({
     id: { type: ObjectId },
     fullname: { type: String },
-    password: { type: String, select: false },
+    password: { type: String },
     email: { type: String },
     providers: { type : Array , default: [] },
     updated: { type: Date, default: Date.now },

@@ -2,10 +2,6 @@ const express = require('express');
 const router = express.Router();
 const middlewares = require("../middlewares")
 const userController = require("../controllers/userController")
-const authController = require("../controllers/oauthController")
-
-
-router.get('/auth/user', middlewares.isUserAuthenticated, authController.getUserSession)
 
 router.post('/users', middlewares.isUserAuthenticated, userController.createUser)
 router.get('/users', middlewares.isUserAuthenticated, userController.getAllUsers)

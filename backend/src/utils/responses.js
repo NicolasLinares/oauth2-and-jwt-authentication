@@ -25,4 +25,14 @@ httpResponse[CONST.httpStatus.CONFLICT] = (response, msg = null) => {
     return response.status(CONST.httpStatus.CONFLICT).json({ error: message })
 }
 
+httpResponse[CONST.httpStatus.UNAUTHORIZED] = (response, msg = null) => {
+    let message = msg || `${CONST.httpStatus.UNAUTHORIZED} Unauthorized`
+    return response.status(CONST.httpStatus.UNAUTHORIZED).json({ error: message })
+}
+
+httpResponse[CONST.httpStatus.INTERNAL_ERROR] = (response, msg = null) => {
+    let message = msg || `${CONST.httpStatus.INTERNAL_ERROR} Internal server error`
+    return response.status(CONST.httpStatus.INTERNAL_ERROR).json({ error: message })
+}
+
 module.exports = httpResponse

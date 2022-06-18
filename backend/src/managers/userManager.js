@@ -3,12 +3,12 @@ const logger = require("../services/log")
 
 function UserManager() {
 
-    this.getUserById = (id) => {
-        return database.getUser(id)
+    this.getUserByEmail = (email) => {
+        return database.getUserByEmail(email)
     }
 
     this.getUserById = (id) => {
-        return database.getUser(id)
+        return database.getUserById(id)
     }
 
     this.getUserByProviderId = (providerUserId) => {
