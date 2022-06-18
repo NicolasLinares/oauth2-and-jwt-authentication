@@ -66,22 +66,24 @@ function AuthController() {
         }
     }
 
-    this.register = (request, response) => {
+    this.register = async (request, response) => {
         // TODO: validations
         const user = request.body
-        userManager.createUser(user)
-            .then(createdUser => {
-                const token = jwt.sign({
-                    name: createdUser.fullname,
-                    id: createdUser.id
-                }, process.env.TOKEN_SECRET)
-                
-                response.header('auth-token', token)
-                return httpResponse[CONST.httpStatus.CREATED](response, createdUser)
-            })
-            .catch(err => {
-                return httpResponse[CONST.httpStatus.BAD_REQUEST](response, err)
-            })
+
+        try {
+            const createdUser = await userManager.createUser(user)
+
+            const token = jwt.sign({
+                email: createdUser.email,
+                id: createdUser.id
+            }, process.env.TOKEN_SECRET)
+            response.header('auth-token', token)
+            return httpResponse[CONST.httpStatus.CREATED](response, createdUser)
+        } catch(error) {
+            logger.error(error)
+            const message = "Imposible to register user"
+            return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
+        }
     }
 }
 

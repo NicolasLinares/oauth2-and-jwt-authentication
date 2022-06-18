@@ -30,11 +30,12 @@ UserSchema.set('toPublicData', {
 
 UserSchema.pre('save', function(next) {
     let User = model('User', UserSchema)
-    User.find({ email: this.email }, function(err, docs) {
+    let email = this.email
+    User.find({ email: email }, function(err, docs) {
         if (!docs.length) {
             next();
         } else {
-            next(new Error(`User with the email [${this.email}] already exists`))
+            next(new Error(`User with the email [${email}] already exists`))
         }
     })
 })

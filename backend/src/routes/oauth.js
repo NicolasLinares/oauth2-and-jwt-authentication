@@ -1,8 +1,6 @@
 const express = require("express")
 const router = express.Router()
 const passport = require("passport")
-const database = require("../services/database")
-const logger = require("../services/log")
 const strategy = require("../services/oauth2")
 
 passport.use(strategy.githubProvider)
