@@ -13,4 +13,4 @@ router.use(loginApi)
 router.use(oauthLoginApi)
 router.use(usersApi)
 
-module.exports = router;
+module.exports = router

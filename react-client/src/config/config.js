@@ -6,11 +6,15 @@ export const env = {
 
 
 export const uri = {
-    provider: {
-        GOOGLE: "http://localhost:3080/api/v1/login/google",
-        GITHUB: "http://localhost:3080/api/v1/login/github"
-    },
-    user: {
-        AUTH: "http://localhost:3080/api/v1/auth/user"
+    auth: {
+        GOOGLE_LOGIN: "http://localhost:3080/api/v1/login/google",
+        GITHUB_LOGIN: "http://localhost:3080/api/v1/login/github",
+        GET_USER_SESSION: "http://localhost:3080/api/v1/oauth/user",
+        CREDENTIALS_LOGIN: "http://localhost:3080/api/v1/login",
     }
+}
+
+export const httpStatus = {
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404
 }

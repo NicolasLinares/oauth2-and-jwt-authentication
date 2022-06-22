@@ -39,24 +39,12 @@ function UserController() {
     }
 
     this.getAllUsers = (request, response) => {
-        userManager.getUsers()
+        userManager.getAllUsers()
             .then(users => {
                 httpResponse[CONST.httpStatus.OK](response, users)
             })
             .catch(err => {
                 httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
-            })
-    }
-
-    this.createUser = (request, response) => {
-        const user = request.body
-
-        userManager.addUser(user)
-            .then((savedUser) => {
-                httpResponse[CONST.httpStatus.CREATED](response, savedUser)
-            })
-            .catch(err => {
-                httpResponse[CONST.httpStatus.CONFLICT](response, err.message)
             })
     }
 

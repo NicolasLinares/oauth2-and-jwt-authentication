@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import { FcGoogle } from 'react-icons/fc'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
@@ -11,26 +11,13 @@ import { useForm } from "react-hook-form"
 
 const BootstrapStyle = {
     button: 'mt-3 p-3 w-100 d-flex justify-content-center align-items-center',
+    inputError: 'input-error',
+    messageError: 'message-error'
 }
 
-function CredentialsLoginForm (props) {
+function CredentialsLoginForm ({onSubmit, onFailLogin, onSuccessLogin}) {
 
-    
-    useEffect(() => {
-        (function () {
-            'use strict'
-            var form = document.querySelectorAll('.needs-validation')[0]
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-                form.classList.add('was-validated')
-            })
-        })()
-    }, [])
-
-    const { register, handleSubmit, formState: { errors, dirtyFields } } = useForm({
+    const { register, handleSubmit } = useForm({
         defaultValues: {
             email: "",
             password: ""
@@ -40,13 +27,63 @@ function CredentialsLoginForm (props) {
     const [passwordButtonVisibility, setPasswordButtonVisibility] = useState(false)
     const [passwordValueVisibility, setPasswordValueVisibility] = useState(false)
 
-    const onSubmit = (data) => {
+
+    const showInputBorderFeedback = function(containerId, inputId) {
+        let inputContainer = document.getElementById(containerId)
+        inputContainer.classList.add(BootstrapStyle.inputError)
+        let inputElement = document.getElementById(inputId)
+        inputElement.onfocus = () => {
+            inputContainer.classList.remove(BootstrapStyle.inputError)
+        }
+    }
+    const hideErrorMessageFeedback = function() {
+        let errorMessage = document.getElementById("message-error")
+        errorMessage.hidden = true
+        errorMessage.innerText = ""
+    }
+    const showErrorMessageFeedback = function(message) {
+        let errorMessage = document.getElementById("message-error")
+        errorMessage.hidden = false
+        errorMessage.innerText = "Incorrect email or password"
+    }
+    const showErrorByStatus = []
+    showErrorByStatus[CONST.httpStatus.NOT_FOUND] = function () {
+        showInputBorderFeedback("input-email-container", "input-email")
+    }
+    showErrorByStatus[CONST.httpStatus.UNAUTHORIZED] = function () {
+        showInputBorderFeedback("input-password-container", "input-password")
+    }
+
+    const handleFailLogin = function ({status, data}) {
+        console.error(data.error)
+        showErrorMessageFeedback(data.error)
+        //showErrorByStatus[status]()
+        typeof(onFailLogin) == "function" && onFailLogin()
+    }
+    const handleSuccessLogin = function ({data}) {
         console.log(data)
+        hideErrorMessageFeedback()
+        typeof(onSuccessLogin) == "function" && onSuccessLogin()
+    }
+
+    const handleContinueWithEmail = (e) => {
+        e.preventDefault()
+
+
+        handleSubmit((credentials) => {
+            onSubmit(credentials)
+                .then(function (response) {
+                    handleSuccessLogin(response)
+                })
+                .catch(function ({response}) {
+                    handleFailLogin(response)
+                })
+        })(e)
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className='needs-validation' noValidate>
-            <div className='input-group has-validation'>
+        <form onSubmit={handleContinueWithEmail}>
+            <div className='input-group' id="input-email-container">
                 <input 
                     {...register("email", {
                         required: true,
@@ -55,17 +92,17 @@ function CredentialsLoginForm (props) {
                             message: "Invalid email address"
                         }
                     })}
-                    required
                     type="email"
                     name="email"
                     id="input-email"
                     placeholder='Email address'
-                    className='form-control'
+                    className='form-control shadow-none'
                 ></input>
             </div>
 
-            <div id="input-group-password" className="input-group mt-2">
+            <div className="input-group mt-3" id="input-password-container">
                 <input
+                    id="input-password"
                     {...register("password", {
                         required: true,
                         onChange: (event) => {
@@ -73,12 +110,11 @@ function CredentialsLoginForm (props) {
                         }                        
                     })}
                     onFocus={(event) => event.target.value.length > 0 && setPasswordButtonVisibility(true) }
-                    required
                     type={passwordValueVisibility ? "text" : "password"} 
                     name="password" 
                     autoComplete='true' 
                     placeholder="Password"
-                    className="form-control" 
+                    className="form-control shadow-none" 
                 ></input>
                 {
                     passwordButtonVisibility &&
@@ -87,7 +123,7 @@ function CredentialsLoginForm (props) {
                     </button>
                 }
             </div>
-
+            <div className="mt-3 mx-2 message-error" id="message-error" hidden></div>
             <button className={`${BootstrapStyle.button} btn btn-light`} type="submit" >
                 Continue with Email
             </button>
@@ -97,14 +133,18 @@ function CredentialsLoginForm (props) {
 
 function LoginForm(props) {
     
-    let startWithGitHub = function (e) {
+    const startWithGitHub = function (e) {
         e.preventDefault()
-        authController.startWith(CONST.uri.provider.GITHUB, usersController.fetchUser)
+        authController.startWithOAuth2(CONST.uri.auth.GITHUB_LOGIN, usersController.fetchUser)
     }
 
-    let startWithGoogle = function (e) {
+    const startWithGoogle = function (e) {
         e.preventDefault()
-        authController.startWith(CONST.uri.provider.GOOGLE, usersController.fetchUser)
+        authController.startWithOAuth2(CONST.uri.auth.GOOGLE_LOGIN, usersController.fetchUser)
+    }
+
+    const startWithEmail = function (credentials) {
+        return authController.startWithCredentials(credentials)
     }
 
     let signUpUrl = "#"
@@ -138,7 +178,7 @@ function LoginForm(props) {
             </div>
 
 
-            <CredentialsLoginForm />
+            <CredentialsLoginForm onSubmit={startWithEmail} onFailLogin={() => {}} onSuccessLogin={() => {}}/>
 
             <p className='mt-4'>
                 Don´t have an account?

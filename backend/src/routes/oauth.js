@@ -1,10 +1,10 @@
 const express = require("express")
 const router = express.Router()
 const passport = require("passport")
-const strategy = require("../services/oauth2")
+const strategy = require("../services/auth")
 
-passport.use(strategy.githubProvider)
-passport.use(strategy.googleProvider)
+passport.use(strategy.oauth2GithubProvider)
+passport.use(strategy.oauth2GoogleProvider)
 
 passport.serializeUser(function(user, done) {
 	done(null, user)

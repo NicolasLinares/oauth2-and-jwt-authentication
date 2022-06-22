@@ -25,11 +25,18 @@ function AuthController() {
                     updated: fullUserData.updated,
                     created: fullUserData.created
                 }
-                logger.info(`User with id "${fullUserData.id}" started session [${request.sessionID}]`)
-                response.json(publicUserInfo)
+                const token = jwt.sign({
+                    email: publicUserInfo.email,
+                    id: publicUserInfo.id
+                }, process.env.TOKEN_SECRET)
+                response.header('auth-token', token)
+                logger.info(`Session started for user [${publicUserInfo.email}]`)
+                return httpResponse[CONST.httpStatus.OK](response, publicUserInfo)
             })
             .catch((error) => {
-                logger.error(error)
+                const message = `Imposible to get user session: ${error}`
+                logger.error(message)
+                return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
             })
     }
 
@@ -40,14 +47,13 @@ function AuthController() {
         try {
             const user = await userManager.getUserByEmail(email)
             if (!user) {
-                const message = `User '${email}' not found`
+                const message = `Email not found`
                 logger.info(`Login rejected. ${message}`)
                 return httpResponse[CONST.httpStatus.NOT_FOUND](response, message)
             }
-
             const isValidPassword = await bcrypt.compare(password, user.password)
             if (!isValidPassword) {
-                const message = "Invalid user password"
+                const message = "Invalid password"
                 logger.info(`Login rejected. ${message}`)
                 return httpResponse[CONST.httpStatus.UNAUTHORIZED](response, message)
             }
@@ -57,11 +63,12 @@ function AuthController() {
                 id: user.id
             }, process.env.TOKEN_SECRET)
             response.header('auth-token', token)
-            return httpResponse[CONST.httpStatus.OK](response, user)
 
+            logger.info(`Session started for user [${user.email}]`)
+            return httpResponse[CONST.httpStatus.OK](response, user)
         } catch(error) {
-            logger.error(error)
-            const message = "Imposible to login user"
+            const message = `Imposible to login user: ${error}`
+            logger.error(message)
             return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
         }
     }
