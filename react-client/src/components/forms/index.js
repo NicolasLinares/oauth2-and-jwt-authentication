@@ -1,3 +1,3 @@
-import LoginForm from './loginForm'
+import LoginOptionsCard from './loginOptionsCard'
 
-export { LoginForm }
+export { LoginOptionsCard }
