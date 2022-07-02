@@ -1,45 +1,84 @@
 import React, { useState } from "react"
 import { FiEye, FiEyeOff } from "react-icons/fi"
+import { BootstrapStyle } from "assets/bootstrapStyle"
 
-function EmailInput ({onRegister}) {
+function FormGroup({label, errorMessage, children}) {
     return (
-        <input
-            {...onRegister}
-            type="email"
-            name="email"
-            placeholder="Email address"
-            className="form-control shadow-none"
-        ></input>
+        <div className={BootstrapStyle.formGroup  + " position-relative"}>
+            <div className={BootstrapStyle.floatingLabel}>
+                {children}
+                {
+                    label &&
+                    <label htmlFor="floatingInput" className="form-label">
+                        {label}
+                    </label>
+                }
+            </div>
+            <small className="invalid-feedback">
+                {errorMessage}
+            </small>
+        </div>
     )
 }
 
-function PasswordInput ({onRegister, onChange, type}) {
+function EmailInput ({onRegister, inputName, label, placeholder, className, errorMessage}) {
+    return (
+        <FormGroup label={label} errorMessage={errorMessage}>
+            <input
+                {...onRegister}
+                type="email"
+                autoComplete="username"
+                name={inputName}
+                placeholder={placeholder || ""}
+                className={`${BootstrapStyle.input} ${className}`}
+            ></input>
+        </FormGroup>
+    )
+}
+
+function FullNameInput ({onRegister, inputName, label, placeholder, className, errorMessage}) {
+    return (
+        <FormGroup label={label} errorMessage={errorMessage}>
+            <input
+                {...onRegister}
+                type="text"
+                autoComplete="username"
+                name={inputName}
+                placeholder={placeholder || ""}
+                className={`${BootstrapStyle.input} ${className}`}
+            ></input>
+        </FormGroup>
+    )
+}
+
+function PasswordInput({onRegister, inputName, label, placeholder, className, errorMessage}) {
 
     const [passwordValueVisibility, setPasswordValueVisibility] = useState(false)
     const [passwordButtonVisibility, setPasswordButtonVisibility] = useState(false)
 
-
     return (
-        <div className="input-group mt-3">
+        <FormGroup label={label} errorMessage={errorMessage}>
             <input
                 {...onRegister}
                 type={passwordValueVisibility ? "text" : "password"} 
-                name="password" 
-                placeholder="Password"
-                className="form-control shadow-none"
+                name={inputName}
+                placeholder={placeholder || ""}
+                className={`${BootstrapStyle.input} ${className}`}
+                autoComplete={"new-password"}
                 onChange={(event) => event.target.value.length > 0 ? setPasswordButtonVisibility(true) : setPasswordButtonVisibility(false)}       
             ></input>
             {
                 passwordButtonVisibility &&
-                <button id="show-password-btn" className="btn shadow-none" type="button" style={{color: "#909090"}} onClick={() => setPasswordValueVisibility(!passwordValueVisibility)}>
+                <button id="password-btn" className={BootstrapStyle.passwordButton} type="button" onClick={() => setPasswordValueVisibility(!passwordValueVisibility)}>
                     { passwordValueVisibility ? <FiEye className="mx-1"/> : <FiEyeOff className="mx-1"/> }
                 </button>
             }
-        </div>
+        </FormGroup>
     )
 }
 
 export {
     EmailInput,
     PasswordInput,
+    FullNameInput
 }

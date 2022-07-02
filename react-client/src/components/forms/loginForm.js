@@ -1,5 +1,4 @@
 import React from 'react'
-import { FiEye, FiEyeOff } from 'react-icons/fi'
 import { useForm } from "react-hook-form"
 import { LoginButton } from 'components/buttons'
 import { EmailInput, PasswordInput } from 'components/inputs'
@@ -59,16 +58,25 @@ function CredentialsLoginForm ({onSubmit, onFailLogin, onSuccessLogin}) {
                         message: "Invalid email address"
                     }
                 })}
+                inputName="email"
+                label="Email address"
+                placeholder="Enter your email"
             />
             <PasswordInput
                 onRegister={register("password", {
                     required: true            
                 })}
+                inputName="password"
+                label="Password"
+                placeholder="Enter password"
             />
 
             <div className="mt-3 mx-2 message-error" id="message-error" hidden></div>
 
-            <LoginButton onClick={onSubmit} />
+            <LoginButton
+                textContent={"Continue with email"}
+                onClick={onSubmit}
+            />
         </form>
     )
 }

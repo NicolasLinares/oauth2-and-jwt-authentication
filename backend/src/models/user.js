@@ -35,7 +35,7 @@ UserSchema.pre('save', function(next) {
         if (!docs.length) {
             next();
         } else {
-            next(new Error(`User with the email [${email}] already exists`))
+            next(new Error(`User with email [${email}] already exists`))
         }
     })
 })

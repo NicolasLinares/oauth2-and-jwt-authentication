@@ -1,9 +1,11 @@
 import { 
     EmailInput,
-    PasswordInput
+    PasswordInput,
+    FullNameInput
 } from './textInputs'
 
 export { 
     EmailInput,
-    PasswordInput 
+    PasswordInput,
+    FullNameInput
 }

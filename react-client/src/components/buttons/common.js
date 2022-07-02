@@ -1,6 +1,6 @@
 import { BootstrapStyle } from "assets/bootstrapStyle"
 
-function BasicButton({IconElement, type, text, className, onClick}) {
+function BasicButton({IconElement, type, text, className, onClick, style}) {
 
     const doOnClick = (e) => {
         if (!onClick || typeof(onClick) !== "function") {
@@ -14,7 +14,8 @@ function BasicButton({IconElement, type, text, className, onClick}) {
         <button
             type={type || "button"}
             className={`${BootstrapStyle.button} ${className}`} 
-            onClick={doOnClick}
+            onClick={onClick}
+            style={style}
         >
             {IconElement && <IconElement />}
             <span>

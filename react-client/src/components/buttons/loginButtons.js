@@ -23,13 +23,14 @@ function GitHubOAuth2Button ({onClick}) {
     )
 }
 
-function LoginButton ({onClick}) {
+function LoginButton ({onClick, textContent}) {
     return (
         <BasicButton
             type="submit"
-            text={"Continue with email"}
+            text={textContent}
             className={"btn-light"}
             onClick={onClick}
+            style={{backgroundColor:"#0d6efd", color: "white"}}
         />
     )
 }
