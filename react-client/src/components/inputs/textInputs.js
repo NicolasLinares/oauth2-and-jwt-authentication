@@ -21,7 +21,7 @@ function FormGroup({label, errorMessage, children}) {
     )
 }
 
-function EmailInput ({onRegister, inputName, label, placeholder, className, errorMessage}) {
+function EmailInput ({onRegister, inputName, label, placeholder, className, errorMessage, maxLength}) {
     return (
         <FormGroup label={label} errorMessage={errorMessage}>
             <input
@@ -31,12 +31,13 @@ function EmailInput ({onRegister, inputName, label, placeholder, className, erro
                 name={inputName}
                 placeholder={placeholder || ""}
                 className={`${BootstrapStyle.input} ${className}`}
+                maxLength={maxLength}
             ></input>
         </FormGroup>
     )
 }
 
-function FullNameInput ({onRegister, inputName, label, placeholder, className, errorMessage}) {
+function FullNameInput ({onRegister, inputName, label, placeholder, className, errorMessage, maxLength}) {
     return (
         <FormGroup label={label} errorMessage={errorMessage}>
             <input
@@ -46,12 +47,13 @@ function FullNameInput ({onRegister, inputName, label, placeholder, className, e
                 name={inputName}
                 placeholder={placeholder || ""}
                 className={`${BootstrapStyle.input} ${className}`}
+                maxLength={maxLength}
             ></input>
         </FormGroup>
     )
 }
 
-function PasswordInput({onRegister, inputName, label, placeholder, className, errorMessage}) {
+function PasswordInput({onRegister, inputName, label, placeholder, className, errorMessage, maxLength}) {
 
     const [passwordValueVisibility, setPasswordValueVisibility] = useState(false)
     const [passwordButtonVisibility, setPasswordButtonVisibility] = useState(false)
@@ -65,6 +67,7 @@ function PasswordInput({onRegister, inputName, label, placeholder, className, er
                 placeholder={placeholder || ""}
                 className={`${BootstrapStyle.input} ${className}`}
                 autoComplete={"new-password"}
+                maxLength={maxLength}
                 onChange={(event) => event.target.value.length > 0 ? setPasswordButtonVisibility(true) : setPasswordButtonVisibility(false)}       
             ></input>
             {

@@ -7,69 +7,22 @@ import "./loginForm.css"
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 
-
-
-function ConfirmPassword() {
-    const formSchema = Yup.object().shape({
-        password: Yup.string()
-            .required('Password is mandatory')
-            .min(3, 'Password must be at 3 char long'),
-        confirmPwd: Yup.string()
-            .required('Password is mandatory')
-            .oneOf([Yup.ref('password')], 'Passwords does not match'),
-    })
-    const formOptions = { resolver: yupResolver(formSchema) }
-    const { register, handleSubmit, reset, formState } = useForm(formOptions)
-    const { errors } = formState
-    function onSubmit(data) {
-        console.log(JSON.stringify(data, null, 4))
-        return false
-    }
-    return (
-        <div className="container mt-5">
-            <h2>React Confirm Password Validation Example</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="form-group">
-                    <label>Password</label>
-                    <input
-                        name="password"
-                        type="password"
-                        {...register('password')}
-                        className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">{errors.password?.message}</div>
-                </div>
-                <div className="form-group">
-                    <label>Confirm Password</label>
-                    <input
-                        name="confirmPwd"
-                        type="password"
-                        {...register('confirmPwd')}
-                        className={`form-control ${errors.confirmPwd ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">{errors.confirmPwd?.message}</div>
-                </div>
-                <div className="mt-3">
-                    <button type="submit" className="btn btn-primary">
-            Submit
-                    </button>
-                </div>
-            </form>
-        </div>
-    )
-}
-
-
 function RegisterForm({onSubmit, onFailLogin, onSuccessLogin}) {
+
+    const MAX_LENGTH_FULLNAME = 64
+    const MAX_LENGTH_EMAIL = 128
+    const MAX_LENGTH_PASSWORD = 64
+
 
     const formSchema = Yup.object().shape({
         fullname: Yup.string()
             .required('Full name is mandatory'),
         email: Yup.string()
-            .required('Email address is mandatory'),
+            .required('Email address is mandatory')
+            .email('Must be a valid email'),
         password: Yup.string()
             .required('Password is mandatory')
-            .min(3, 'Password must be at 3 char long'),
+            .min(8, 'Password require at least 8 characters'),
         passwordConfirmation: Yup.string()
             .required('Password confirmation is mandatory')
             .oneOf([Yup.ref('password')], 'Passwords does not match'),
@@ -79,23 +32,11 @@ function RegisterForm({onSubmit, onFailLogin, onSuccessLogin}) {
     const { register, handleSubmit, formState } = useForm(formOptions)
     const { errors } = formState
 
-    const hideErrorMessageFeedback = function() {
-        let errorMessage = document.getElementById("message-error")
-        errorMessage.hidden = true
-        errorMessage.innerText = ""
-    }
-    const showErrorMessageFeedback = function(message) {
-        let errorMessage = document.getElementById("message-error")
-        errorMessage.hidden = false
-        errorMessage.innerText = message
-    }
 
     const handleFailLogin = function (errorMessage) {
-        showErrorMessageFeedback(errorMessage)
         typeof(onFailLogin) == "function" && onFailLogin(errorMessage)
     }
     const handleSuccessLogin = function ({data}) {
-        hideErrorMessageFeedback()
         typeof(onSuccessLogin) == "function" && onSuccessLogin(data)
     }
 
@@ -122,6 +63,7 @@ function RegisterForm({onSubmit, onFailLogin, onSuccessLogin}) {
                 placeholder="Enter your full name"
                 className={errors.fullname ? 'is-invalid' : ''}
                 errorMessage={errors.fullname?.message}
+                maxLength={MAX_LENGTH_FULLNAME}
             />
             <EmailInput 
                 onRegister={register("email", {required: true})}
@@ -130,6 +72,7 @@ function RegisterForm({onSubmit, onFailLogin, onSuccessLogin}) {
                 placeholder="name@example.com"
                 className={errors.email ? 'is-invalid' : ''}
                 errorMessage={errors.email?.message}
+                maxLength={MAX_LENGTH_EMAIL}
             />
             <PasswordInput
                 onRegister={register("password", {required: true})}
@@ -138,6 +81,7 @@ function RegisterForm({onSubmit, onFailLogin, onSuccessLogin}) {
                 placeholder="Enter your password"
                 className={errors.password ? 'is-invalid' : ''}
                 errorMessage={errors.password?.message}
+                maxLength={MAX_LENGTH_PASSWORD}
             />
             <PasswordInput
                 onRegister={register("passwordConfirmation", {required: true})}
@@ -146,6 +90,7 @@ function RegisterForm({onSubmit, onFailLogin, onSuccessLogin}) {
                 placeholder="Confirm your password"
                 className={errors.passwordConfirmation ? 'is-invalid' : ''}
                 errorMessage={errors.passwordConfirmation?.message}
+                maxLength={MAX_LENGTH_PASSWORD}
             />
 
             <RegisterButton

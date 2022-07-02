@@ -15,13 +15,11 @@ export const registerUser = async (credentials) => {
     if (!credentials.password) {
         throw Error("Password require at least 8 characters")
     }
-
     if (credentials.password != credentials.passwordConfirmation) {
         throw Error("Password confirmation is not the same")
     }
 
     delete credentials.passwordConfirmation
-
 
     return axios({
         method: "post",
