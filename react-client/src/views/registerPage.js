@@ -20,6 +20,12 @@ function RegisterPage(props) {
         return authController.registerUser(credentials)
     }
 
+    const onFailRegister = function () {
+        
+    }
+
+    const onSuccessfulRegister = function () {
+    }
 
     return (            
         <>

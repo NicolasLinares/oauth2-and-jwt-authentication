@@ -28,15 +28,15 @@ function UserManager() {
     }
 
     this.createUser = (user) => {
-        if (!user.fullname) {
-            throw "required 'fullname' field is missing"
-        }
-        if (!user.password) {
-            throw "required 'password' field is missing"
-        }
-        if (!user.email) {
-            throw "required 'email' field is missing"
-        }
+        // if (!user.fullname) {
+        //     throw "required 'fullname' field is missing"
+        // }
+        // if (!user.password) {
+        //     throw "required 'password' field is missing"
+        // }
+        // if (!user.email) {
+        //     throw "required 'email' field is missing"
+        // }
 
         return database.addUser(user)
     }

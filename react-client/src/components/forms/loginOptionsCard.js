@@ -2,11 +2,10 @@ import React from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import { CONST } from "config"
-import { authController, usersController } from "services/http"
+import { authController } from "services/http"
 import CredentialsLoginForm from "./loginForm"
 import "./loginOptionsCard.css"
 import { GoogleOAuth2Button, GitHubOAuth2Button } from 'components/buttons'
-
 
 function Separator () {
     return (
@@ -23,12 +22,12 @@ function LoginOptionsCard(props) {
     
     const startWithGitHub = function (e) {
         e.preventDefault()
-        authController.startWithOAuth2(CONST.uri.auth.GITHUB_LOGIN, usersController.fetchUser)
+        authController.startWithOAuth2(CONST.uri.auth.GITHUB_LOGIN)
     }
 
     const startWithGoogle = function (e) {
         e.preventDefault()
-        authController.startWithOAuth2(CONST.uri.auth.GOOGLE_LOGIN, usersController.fetchUser)
+        authController.startWithOAuth2(CONST.uri.auth.GOOGLE_LOGIN)
     }
 
     const startWithEmail = function (credentials) {
@@ -40,7 +39,7 @@ function LoginOptionsCard(props) {
     }
 
     const onSuccessLogin = function (data) {
-        console.log(data)
+
     }
 
     return (

@@ -78,9 +78,9 @@ function MongoDB() {
             throw "user cannot be null or undefined"
         }
         const { fullname, email, password } = user;
-        if (!email) {
-            throw "email field cannot be null or undefined"
-        }
+        // if (!email) {
+        //     throw "email field cannot be null or undefined"
+        // }
 
         const saltRounds = 10
         const passwordHashed = password ? await bcrypt.hash(password, saltRounds) : null
@@ -99,10 +99,6 @@ function MongoDB() {
     }
 
     this.getUserByEmail = (email) => {
-        if (!email) {
-            throw "email cannot be null or undefined"
-        }
-
         return User.findOne({email: email})
             .then((user) => {
                 return user?.toJSON()

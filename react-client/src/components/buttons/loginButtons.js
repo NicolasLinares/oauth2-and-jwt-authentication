@@ -35,8 +35,21 @@ function LoginButton ({onClick, textContent}) {
     )
 }
 
+function LogoutButton ({onClick, textContent}) {
+    return (
+        <BasicButton
+            type="button"
+            text={textContent}
+            className={"btn-light"}
+            onClick={onClick}
+            style={{backgroundColor:"#0d6efd", color: "white"}}
+        />
+    )
+}
+
 export {
     LoginButton,
     GoogleOAuth2Button,
-    GitHubOAuth2Button
+    GitHubOAuth2Button,
+    LogoutButton
 }

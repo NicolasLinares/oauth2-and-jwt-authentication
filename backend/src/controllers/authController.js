@@ -5,6 +5,7 @@ const CONST = require("../utils/constants")
 var httpResponse = require("../utils/responses")
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt")
+const DuplicatedEmailError = require("../utils/CustomErrors")
 
 function AuthController() {
 
@@ -25,13 +26,14 @@ function AuthController() {
                     updated: fullUserData.updated,
                     created: fullUserData.created
                 }
-                const token = jwt.sign({
-                    email: publicUserInfo.email,
-                    id: publicUserInfo.id
-                }, process.env.TOKEN_SECRET)
-                response.header('auth-token', token)
+
+                const body = {
+                    jwt: generateJWT(publicUserInfo),
+                    user: publicUserInfo
+                }
+
                 logger.info(`Session started for user [${publicUserInfo.email}]`)
-                return httpResponse[CONST.httpStatus.OK](response, publicUserInfo)
+                return httpResponse[CONST.httpStatus.OK](response, body)
             })
             .catch((error) => {
                 const message = `Imposible to get user session: ${error}`
@@ -41,7 +43,6 @@ function AuthController() {
     }
 
     this.login = async (request, response) => {
-        // TODO: validations
         const { email, password } = request.body
 
         try {
@@ -58,14 +59,13 @@ function AuthController() {
                 return httpResponse[CONST.httpStatus.UNAUTHORIZED](response, message)
             }
 
-            const token = jwt.sign({
-                email: user.email,
-                id: user.id
-            }, process.env.TOKEN_SECRET)
-            response.header('auth-token', token)
+            const body = {
+                jwt: generateJWT(user),
+                user: user
+            }
 
             logger.info(`Session started for user [${user.email}]`)
-            return httpResponse[CONST.httpStatus.OK](response, user)
+            return httpResponse[CONST.httpStatus.OK](response, body)
         } catch(error) {
             const message = `Imposible to login user: ${error}`
             logger.error(message)
@@ -74,24 +74,59 @@ function AuthController() {
     }
 
     this.register = async (request, response) => {
-        // TODO: validations
         const user = request.body
 
         try {
             const createdUser = await userManager.createUser(user)
-
-            const token = jwt.sign({
-                email: createdUser.email,
-                id: createdUser.id
-            }, process.env.TOKEN_SECRET)
-            response.header('auth-token', token)
-            return httpResponse[CONST.httpStatus.CREATED](response, createdUser)
+            const body = {
+                jwt: generateJWT(createdUser),
+                user: createdUser
+            }
+            return httpResponse[CONST.httpStatus.CREATED](response, body)
         } catch(error) {
             logger.error(error)
+
+            const errors = handleRegisterValidationErrors(error)
+            if (errors) {
+                return httpResponse[CONST.httpStatus.BAD_REQUEST](response, errors)
+            }
+
             const message = "Imposible to register user"
             return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
         }
     }
+
+
+    const generateJWT = (user) => {
+        return jwt.sign({
+            email: user.email,
+            id: user.id
+        }, process.env.TOKEN_SECRET)
+    }
+
+
+    const handleRegisterValidationErrors = (err) => {
+        let errors = {
+            email: "",
+            password: "",
+            fullname: ""
+        }
+    
+        if (err instanceof DuplicatedEmailError || err.code === 11000) {
+            errors.email = "That email is already registered"
+            return errors
+        }
+    
+        // Validations error
+        if (err.message.includes("User validation failed")) {
+            Object.values(err.errors).forEach(({properties}) => {
+                errors[properties.path] = properties.message
+            })
+        }
+    
+        return errors
+    }
+
 }
 
 

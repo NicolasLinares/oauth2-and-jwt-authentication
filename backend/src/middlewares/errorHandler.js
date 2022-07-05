@@ -1,6 +1,6 @@
 const CONST = require("../utils/constants")
 
-function errorHandler(error, request, response, next) {
+function errorHandler(err, request, response, next) {
 	response.status(error.status || CONST.httpStatus.INTERNAL_ERROR)
 	response.json({ error: error })
 }
