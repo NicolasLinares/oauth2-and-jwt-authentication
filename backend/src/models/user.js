@@ -1,6 +1,7 @@
 const { Schema, model, ObjectId } = require("mongoose")
 const { isEmail } = require("validator")
 const DuplicatedEmailError = require("../utils/CustomErrors")
+const logger = require("../services/log")
 
 const UserSchema = new Schema({
     id: { 
@@ -57,6 +58,12 @@ UserSchema.pre('save', function(next) {
             next(new DuplicatedEmailError(`User with email [${email}] already exists`))
         }
     })
+})
+
+UserSchema.post('save', function(doc, next) {
+    let savedUser = doc
+    logger.info(`User with email [${savedUser.email}] succesfully created`)
+    next()
 })
 
 UserSchema.pre('findOneAndUpdate', function(next) {

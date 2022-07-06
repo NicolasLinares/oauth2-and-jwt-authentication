@@ -93,7 +93,6 @@ function MongoDB() {
 
         return newUser.save()
             .then((savedUser) => {
-                logger.info(`User with email [${savedUser.email}] succesfully created`)
                 return savedUser?.toJSON()
             })
     }

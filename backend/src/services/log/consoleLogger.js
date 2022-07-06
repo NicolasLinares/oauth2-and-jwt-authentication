@@ -1,35 +1,54 @@
-const LoggerBase = require("./loggerBase")
+function ConsoleLogger() {
+    this.level = {
+        DEBUG: "debug",
+        INFO: "info",
+        WARN: "warn",
+        ERROR: "error",
+        TRACE: "trace"
+    }
 
-const ConsoleLogger = new LoggerBase()
+    this.logger = console
 
-ConsoleLogger.debug = (text) => {
-    that = ConsoleLogger
-    let logEntry = that.buildLogEntry(that.level.DEBUG, text)
-    console.debug(logEntry)
-}
+    this.debug = (text) => {
+        if (!this.logger) {
+            throw "Not implemented"
+        }
+        let logEntry = buildLogEntry(this.level.DEBUG, text)
+        this.logger.debug(logEntry)
+    }
+    this.info = (text) => {
+        if (!this.logger) {
+            throw "Not implemented"
+        }
+        let logEntry = buildLogEntry(this.level.INFO, text)
+        this.logger.info(logEntry)
+    }
+    this.warn = (text) => {
+        if (!this.logger) {
+            throw "Not implemented"
+        }
+        let logEntry = buildLogEntry(this.level.WARN, text)
+        this.logger.warn(logEntry)
+    }
+    this.error = (text) => {
+        if (!this.logger) {
+            throw "Not implemented"
+        }
+        let logEntry = buildLogEntry(this.level.ERROR, text)
+        this.logger.error(logEntry)
+    }
 
-ConsoleLogger.info = (text) => {
-    that = ConsoleLogger
-    let logEntry = that.buildLogEntry(that.level.INFO, text)
-    console.info(logEntry)
-}
+    this.trace = (text) => {
+        if (!this.logger) {
+            throw "Not implemented"
+        }
+        let logEntry = buildLogEntry(this.level.TRACE, text)
+        this.logger.log(logEntry)
+    }
 
-ConsoleLogger.warn = (text) => {
-    that = ConsoleLogger
-    let logEntry = that.buildLogEntry(that.level.WARN, text)
-    console.warn(logEntry)
-}
-
-ConsoleLogger.error = (text) => {
-    that = ConsoleLogger
-    let logEntry = that.buildLogEntry(that.level.ERROR, text)
-    console.error(logEntry)
-}
-
-ConsoleLogger.trace = (text) => {
-    that = ConsoleLogger
-    let logEntry = that.buildLogEntry(that.level.TRACE, text)
-    console.log(logEntry)
+    function buildLogEntry (level, text) {
+        return `${new Date().toUTCString()} [${level}]: ${text}`;
+    }
 }
 
 module.exports = ConsoleLogger
