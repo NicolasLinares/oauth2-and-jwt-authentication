@@ -84,13 +84,14 @@ function AuthController() {
             }
             return httpResponse[CONST.httpStatus.CREATED](response, body)
         } catch(error) {
-            logger.error(error)
 
+            // Handled errors
             const errors = handleRegisterValidationErrors(error)
             if (errors) {
                 return httpResponse[CONST.httpStatus.BAD_REQUEST](response, errors)
             }
 
+            logger.error(error)
             const message = "Imposible to register user"
             return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
         }

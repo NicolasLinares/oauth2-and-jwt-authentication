@@ -4,7 +4,7 @@ import { LoginButton } from 'components/buttons'
 import { EmailInput, PasswordInput } from 'components/inputs'
 import "./loginForm.css"
 
-function CredentialsLoginForm ({onSubmit, onFailLogin, onSuccessLogin}) {
+function CredentialsLoginForm ({onSubmit, onSuccessLogin}) {
 
     const { register, handleSubmit } = useForm({
         defaultValues: {
@@ -13,25 +13,25 @@ function CredentialsLoginForm ({onSubmit, onFailLogin, onSuccessLogin}) {
         }
     })
 
+    const handleFailLogin = function ({response}) {
+        let { error } = response.data
+        showErrorMessageFeedback(error)
 
-    const hideErrorMessageFeedback = function() {
-        let errorMessage = document.getElementById("message-error")
-        errorMessage.hidden = true
-        errorMessage.innerText = ""
-    }
-    const showErrorMessageFeedback = function(message) {
-        let errorMessage = document.getElementById("message-error")
-        errorMessage.hidden = false
-        errorMessage.innerText = "Incorrect email or password"
-    }
-
-    const handleFailLogin = function ({status, data}) {
-        showErrorMessageFeedback(data.error)
-        typeof(onFailLogin) == "function" && onFailLogin(data.error)
+        function showErrorMessageFeedback (message) {
+            let errorMessage = document.getElementById("message-error")
+            errorMessage.hidden = false
+            errorMessage.innerText = "Incorrect email or password"
+        }
     }
     const handleSuccessLogin = function ({data}) {
         hideErrorMessageFeedback()
         typeof(onSuccessLogin) == "function" && onSuccessLogin(data)
+
+        function hideErrorMessageFeedback () {
+            let errorMessage = document.getElementById("message-error")
+            errorMessage.hidden = true
+            errorMessage.innerText = ""
+        }
     }
 
     const handleContinueWithEmail = (e) => {
@@ -39,12 +39,8 @@ function CredentialsLoginForm ({onSubmit, onFailLogin, onSuccessLogin}) {
 
         handleSubmit((credentials) => {
             onSubmit(credentials)
-                .then(function (response) {
-                    handleSuccessLogin(response)
-                })
-                .catch(function ({response}) {
-                    handleFailLogin(response)
-                })
+                .then(handleSuccessLogin)
+                .catch(handleFailLogin)
         })(e)
     }
 

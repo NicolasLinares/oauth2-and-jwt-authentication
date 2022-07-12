@@ -1,5 +1,6 @@
 import { FcGoogle } from 'react-icons/fc'
 import BasicButton from "./common"
+import { Link } from "react-router-dom"
 
 function GoogleOAuth2Button ({onClick}) {
     return (
@@ -47,9 +48,21 @@ function LogoutButton ({onClick, textContent}) {
     )
 }
 
+function LinkButton ({previousText, linkText, route}) {
+    return (
+        <p className='mt-4'>
+            {previousText}
+            <Link to={route} className='mx-2'>
+                {linkText}
+            </Link>
+        </p>
+    )
+}
+
 export {
     LoginButton,
     GoogleOAuth2Button,
     GitHubOAuth2Button,
-    LogoutButton
+    LogoutButton,
+    LinkButton
 }

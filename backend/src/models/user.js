@@ -2,6 +2,7 @@ const { Schema, model, ObjectId } = require("mongoose")
 const { isEmail } = require("validator")
 const DuplicatedEmailError = require("../utils/CustomErrors")
 const logger = require("../services/log")
+const bcrypt = require("bcrypt")
 
 const UserSchema = new Schema({
     id: { 
@@ -48,16 +49,12 @@ UserSchema.set('toJSON', {
 })
 
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', async function(next) {
     let User = model('User', UserSchema)
-    let email = this.email
-    User.find({ email: email }, function(err, docs) {
-        if (!docs.length) {
-            next();
-        } else {
-            next(new DuplicatedEmailError(`User with email [${email}] already exists`))
-        }
-    })
+
+    const salt = await bcrypt.genSalt()
+    this.password = await bcrypt.hash(this.password, salt)
+    next()
 })
 
 UserSchema.post('save', function(doc, next) {

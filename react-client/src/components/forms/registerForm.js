@@ -6,13 +6,15 @@ import { EmailInput, PasswordInput, FullNameInput } from 'components/inputs'
 import "./loginForm.css"
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
+import { useNavigate } from 'react-router-dom'
 
-function RegisterForm({onSubmit, onFailLogin, onSuccessLogin}) {
+function RegisterForm({onSubmit}) {
+
+    let navigate = useNavigate()
 
     const MAX_LENGTH_FULLNAME = 64
     const MAX_LENGTH_EMAIL = 128
     const MAX_LENGTH_PASSWORD = 64
-
 
     const formSchema = Yup.object().shape({
         fullname: Yup.string()
@@ -29,28 +31,26 @@ function RegisterForm({onSubmit, onFailLogin, onSuccessLogin}) {
     })
       
     const formOptions = { resolver: yupResolver(formSchema) }
-    const { register, handleSubmit, formState } = useForm(formOptions)
-    const { errors } = formState
+    const { register, handleSubmit, formState: { errors }, setError } = useForm(formOptions)
 
-
-    const handleFailLogin = function (errorMessage) {
-        typeof(onFailLogin) == "function" && onFailLogin(errorMessage)
+    const handleFailRegister = function ({response}) {
+        let { error } = response.data
+        error.email && setError("email", { message: error.email }, { shouldFocus: true })
+        error.password && setError("password", { message: error.password }, { shouldFocus: true })
+        error.fullname && setError("fullname", { message: error.fullname }, { shouldFocus: true })
     }
-    const handleSuccessLogin = function ({data}) {
-        typeof(onSuccessLogin) == "function" && onSuccessLogin(data)
+
+    const handleSuccessRegister = function () {
+        navigate("/login")
     }
 
     const handleRegisterUser = (e) => {
         e.preventDefault()
 
-        handleSubmit((credentials) => {
-            onSubmit(credentials)
-                .then(function (response) {
-                    handleSuccessLogin(response)
-                })
-                .catch(function (error) {
-                    handleFailLogin(error.message)
-                })
+        handleSubmit((userInformation) => {
+            onSubmit(userInformation)
+                .then(handleSuccessRegister)
+                .catch(handleFailRegister)
         })(e)
     }
 

@@ -1,7 +1,7 @@
-import LoginOptionsCard from './loginOptionsCard'
+import CredentialsLoginForm from './loginForm'
 import RegisterForm from './registerForm'
 
-export { 
-    LoginOptionsCard,
+export {
+    CredentialsLoginForm,
     RegisterForm
 }

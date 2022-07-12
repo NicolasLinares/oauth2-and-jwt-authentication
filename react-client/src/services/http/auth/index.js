@@ -1,7 +1,5 @@
 
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
-
 import { CONST } from "config"
 
 
@@ -51,25 +49,21 @@ export const startWithOAuth2 = (providerUrl) => {
     let timer = null
     const authWindow = window.open(providerUrl, "_blank", "width: 500px; height: 600px")
 
-    timer = setInterval(() => {
-
-        if (authWindow && authWindow.closed) {
-            fetchUser()
-                .then((response) => {
-
-                    const {jwt, user} = response.data
-                    sessionStorage.setItem("jwt", jwt)
-                    sessionStorage.setItem("user", JSON.stringify(user))
-                    window.location.href = "/home"
-                })
-                .catch((error) => {
-                    console.error(error)
-                })
-            timer && clearInterval(timer)
-        }
-    }, 500)
-
-
+    return new Promise((resolve, reject) => {
+        timer = setInterval(() => {
+            if (authWindow && authWindow.closed) {
+                fetchUser()
+                    .then((response) => {
+                        resolve(response.data)
+                    })
+                    .catch((error) => {
+                        console.error(error)
+                        reject(error)
+                    })
+                timer && clearInterval(timer)
+            }
+        }, 500)
+    })
 
     function fetchUser () {
         return axios.get(CONST.uri.auth.GET_USER_SESSION, { withCredentials: true })

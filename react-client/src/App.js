@@ -1,5 +1,6 @@
+import { useState } from "react"
 import { LoginPage, RegisterPage, HomePage, SuccessLoginPage } from 'views'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import logo from "assets/logo.svg"
 
 function Footer() {
@@ -12,14 +13,27 @@ function Footer() {
 }
 
 function App() {
+
+    let [loggedIn, setLoggedIn] = useState(null)
+    
+    function handleLogin(){
+        setLoggedIn(true)
+    }
+    function handleLogout(){
+        setLoggedIn(false)
+
+    }
+
     return (
         <div className='App-body'>
             <BrowserRouter>
                 <Routes>
-                    <Route path="login" element={<LoginPage/>} />
+                    <Route index element={<LoginPage handleLogin={handleLogin}/>} />
+                    <Route path="login" element={<LoginPage handleLogin={handleLogin}/>} />
                     <Route path="login/success" element={<SuccessLoginPage/>} />
                     <Route path="register" element={<RegisterPage/>} />
-                    <Route path="home" element={<HomePage/>} />
+                    <Route path="home" element={ !loggedIn ? <Navigate to={"/login"} /> : <HomePage handleLogout={handleLogout}/>} />
+                    <Route path="*" element={<h1>404 Not found</h1>} />
                 </Routes>
             </BrowserRouter>
 
