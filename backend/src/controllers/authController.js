@@ -27,13 +27,11 @@ function AuthController() {
                     created: fullUserData.created
                 }
 
-                const body = {
-                    jwt: generateJWT(publicUserInfo),
-                    user: publicUserInfo
-                }
-
+                const token = generateJWT(user.id)
+                response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
+                
                 logger.info(`Session started for user [${publicUserInfo.email}]`)
-                return httpResponse[CONST.httpStatus.OK](response, body)
+                return httpResponse[CONST.httpStatus.OK](response)
             })
             .catch((error) => {
                 const message = `Imposible to get user session: ${error}`
@@ -49,23 +47,20 @@ function AuthController() {
             const user = await userManager.getUserByEmail(email)
             if (!user) {
                 const message = `Email not found`
-                logger.info(`Login rejected. ${message}`)
+                logger.info(`Login rejected [${email}]. ${message}`)
                 return httpResponse[CONST.httpStatus.NOT_FOUND](response, message)
             }
             const isValidPassword = await bcrypt.compare(password, user.password)
             if (!isValidPassword) {
-                const message = "Invalid password"
-                logger.info(`Login rejected. ${message}`)
+                const message = "Wrong password"
+                logger.info(`Login rejected [${email}]. ${message}`)
                 return httpResponse[CONST.httpStatus.UNAUTHORIZED](response, message)
             }
 
-            const body = {
-                jwt: generateJWT(user),
-                user: user
-            }
-
+            const token = generateJWT(user.id)
+            response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
             logger.info(`Session started for user [${user.email}]`)
-            return httpResponse[CONST.httpStatus.OK](response, body)
+            return httpResponse[CONST.httpStatus.OK](response, { id: user.id, })
         } catch(error) {
             const message = `Imposible to login user: ${error}`
             logger.error(message)
@@ -78,11 +73,10 @@ function AuthController() {
 
         try {
             const createdUser = await userManager.createUser(user)
-            const body = {
-                jwt: generateJWT(createdUser),
-                user: createdUser
-            }
-            return httpResponse[CONST.httpStatus.CREATED](response, body)
+            const token = generateJWT(user.id)
+            response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
+            
+            return httpResponse[CONST.httpStatus.CREATED](response, createdUser.id)
         } catch(error) {
 
             // Handled errors
@@ -98,10 +92,9 @@ function AuthController() {
     }
 
 
-    const generateJWT = (user) => {
+    const generateJWT = (userId) => {
         return jwt.sign({
-            email: user.email,
-            id: user.id
+            id: userId
         }, process.env.TOKEN_SECRET)
     }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import { CONST } from "config"
@@ -22,37 +22,59 @@ function LoginPage({handleLogin}) {
 
     let navigate = useNavigate()
 
+    useEffect(() => {
+        let id = sessionStorage.getItem("id")
+        if (!id) {
+            return
+        }
+        handleLogin()
+        navigate("/home")
+    }, [])
+
+
+    const [messageError, setMessageError] = useState("")
 
     const startWithGitHub = function (e) {
         e.preventDefault()
         authController.startWithOAuth2(CONST.uri.auth.GITHUB_LOGIN)
-            .then((data) => {
-                onSuccessLogin(data)
-            })
+            .then(onSuccessLogin)
+            .catch(onFailLogin)
     }
 
     const startWithGoogle = function (e) {
         e.preventDefault()
         authController.startWithOAuth2(CONST.uri.auth.GOOGLE_LOGIN)
-            .then((data) => {
-                onSuccessLogin(data)
-            })
+            .then(onSuccessLogin)
+            .catch(onFailLogin)
     }
 
     const startWithEmail = function (credentials) {
         return authController.startWithCredentials(credentials)
+            .then(onSuccessLogin)
+            .catch(onFailLogin)
     }
 
-    const onSuccessLogin = function (data) {
-        let { jwt, user } = data
-        console.log(jwt)
-        console.log(JSON.stringify(user))
+    const onSuccessLogin = function ({data}) {
+        let { id } = data
 
-        sessionStorage.setItem("jwt", jwt)
-        sessionStorage.setItem("user", JSON.stringify(user))
-
+        if (!id) {
+            let error = "An error occurred during the login process"
+            console.log(error)
+            setMessageError(error)
+            return
+        }
+        sessionStorage.setItem("id", id)
         handleLogin()
         navigate("/home")
+    }
+
+    const onFailLogin = function (error) {
+        if (typeof error !== "object" && !error.response?.data) {
+            return
+        }
+        error = error.response.data.error
+        console.log(error)
+        setMessageError(error)
     }
 
     return (
@@ -67,7 +89,7 @@ function LoginPage({handleLogin}) {
 
             <CredentialsLoginForm 
                 onSubmit={startWithEmail}
-                onSuccessLogin={onSuccessLogin}
+                messageError={messageError}
             />
             <LinkButton route={"/register"} previousText="Don´t have an account?" linkText="Sign up"/>
         </section>

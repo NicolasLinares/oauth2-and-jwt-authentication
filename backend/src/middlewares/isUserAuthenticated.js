@@ -4,22 +4,33 @@ const CONST = require("../utils/constants")
 var httpResponse = require("../utils/responses")
 const jwt = require('jsonwebtoken');
 
+
 const isUserAuthenticated = (request, response, next) => {
 
-	const isCorrect = verifyTokenJWT(request) || verifyOAuth2Session(request)
+	const jwtToken = request.cookies.jwt;
 
-	if (!isCorrect) {
-		logger.debug("Unauthorized resource")
-		httpResponse[CONST.httpStatus.UNAUTHORIZED](response, "You must login first!")
-	}
+	jwt.verify(jwtToken, process.env.TOKEN_SECRET, (error, decodedToken) => {
+		if (error) {
+			logger.error(`Error during JWT session verification. ${error}`)
+			httpResponse[CONST.httpStatus.UNAUTHORIZED](response, "You must login first!")
+		} else {
+			next()
+		}
+	}) 
+	
+	// || verifyOAuth2Session(request)
 
-	request.user.authenticated = isCorrect
-	next()
+	// if (!isCorrect) {
+	// 	logger.debug("Unauthorized resource")
+	// 	httpResponse[CONST.httpStatus.UNAUTHORIZED](response, "You must login first!")
+	// }
+
+	// request.user.authenticated = isCorrect
+	// next()
 }
 
-const verifyTokenJWT = (request) => {
+const verifyTokenJWT = (jwtToken) => {
     try {
-		const jwtToken = request.header('auth-token')
 		if (!jwtToken) {
 			return false
 		}

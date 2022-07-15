@@ -6,7 +6,8 @@ function UserController() {
 
     this.getUserById = (request, response) => {
         const id = request.params.id
-        userManager.getUser(id)
+        
+        userManager.getUserById(id)
             .then(user => {
                 httpResponse[CONST.httpStatus.OK](response, user)
             })

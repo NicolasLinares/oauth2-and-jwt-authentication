@@ -29,39 +29,42 @@ function UserInformation ({user}) {
 function HomePage({handleLogout}) {
 
     let [ userInformation, setUserInformation ] = useState(null)
+
     let navigate = useNavigate()
 
     useEffect(() => {
-        const jwt = sessionStorage.getItem("jwt")
-        let data = sessionStorage.getItem("user")
-
-        setTimeout(() => {
-            if (!data) {
+        let id = sessionStorage.getItem("id")
+        usersController.getUserById(id)
+            .then(({data}) => {
+                console.log(data)
+                setUserInformation(data)
+            })
+            .catch(error => {
+                console.error(error)
                 logout()
-            }
-            setUserInformation(JSON.parse(data))
-        }, 1000)
+            })
+
     }, [])
 
+
     const logout = () => {
-        sessionStorage.removeItem("jwt")
-        sessionStorage.removeItem("user")
         handleLogout()
+        sessionStorage.removeItem("id")
         navigate("/")
     }
 
+    if (!userInformation) {
+        return <Spinner />
+    }
+
     return (
-        
-        !userInformation 
-            ? <Spinner/>
-            : <div className='App-body'>
+        <div className='App-body'>
+            <h1 className='mb-5'>Welcome!</h1>
 
-                <h1 className='mb-5'>Welcome!</h1>
+            <UserInformation user={userInformation} />
 
-                <UserInformation user={userInformation} />
-
-                <LogoutButton textContent={"Logout"} onClick={logout}/>
-            </div>
+            <LogoutButton textContent={"Logout"} onClick={logout}/>
+        </div>
     )
 }
 

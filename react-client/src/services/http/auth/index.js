@@ -23,6 +23,7 @@ export const registerUser = async (credentials) => {
     return axios({
         method: "post",
         url: CONST.uri.auth.REGISTER,
+        withCredentials: true,
         data: credentials,
         headers: { "Content-Type": "application/json" },
     })
@@ -30,15 +31,16 @@ export const registerUser = async (credentials) => {
 
 export const startWithCredentials = async (credentials) => {
     if (!credentials.email) {
-        throw "Email cannot be null or undefined"
+        throw "Enter a valid email"
     }
     if (!credentials.password) {
-        throw "Password cannot be null or undefined"
+        throw "Enter a valid password"
     }
 
     return axios({
         method: "post",
         url: CONST.uri.auth.CREDENTIALS_LOGIN,
+        withCredentials: true,
         data: credentials,
         headers: { "Content-Type": "application/json" },
     })

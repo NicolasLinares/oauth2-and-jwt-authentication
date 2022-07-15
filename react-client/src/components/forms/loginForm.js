@@ -4,7 +4,7 @@ import { LoginButton } from 'components/buttons'
 import { EmailInput, PasswordInput } from 'components/inputs'
 import "./loginForm.css"
 
-function CredentialsLoginForm ({onSubmit, onSuccessLogin}) {
+function CredentialsLoginForm ({onSubmit, messageError}) {
 
     const { register, handleSubmit } = useForm({
         defaultValues: {
@@ -13,34 +13,11 @@ function CredentialsLoginForm ({onSubmit, onSuccessLogin}) {
         }
     })
 
-    const handleFailLogin = function ({response}) {
-        let { error } = response.data
-        showErrorMessageFeedback(error)
-
-        function showErrorMessageFeedback (message) {
-            let errorMessage = document.getElementById("message-error")
-            errorMessage.hidden = false
-            errorMessage.innerText = "Incorrect email or password"
-        }
-    }
-    const handleSuccessLogin = function ({data}) {
-        hideErrorMessageFeedback()
-        typeof(onSuccessLogin) == "function" && onSuccessLogin(data)
-
-        function hideErrorMessageFeedback () {
-            let errorMessage = document.getElementById("message-error")
-            errorMessage.hidden = true
-            errorMessage.innerText = ""
-        }
-    }
-
     const handleContinueWithEmail = (e) => {
         e.preventDefault()
 
         handleSubmit((credentials) => {
             onSubmit(credentials)
-                .then(handleSuccessLogin)
-                .catch(handleFailLogin)
         })(e)
     }
 
@@ -67,7 +44,7 @@ function CredentialsLoginForm ({onSubmit, onSuccessLogin}) {
                 placeholder="Enter password"
             />
 
-            <div className="mt-3 mx-2 message-error" id="message-error" hidden></div>
+            <div className="mt-3 mx-2 message-error" id="message-error">{messageError}</div>
 
             <LoginButton
                 textContent={"Continue with email"}

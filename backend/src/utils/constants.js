@@ -15,8 +15,9 @@ const OAuthProviders = {
     Google: "Google",
 }
 
-
-const CONST = { httpStatus, OAuthProviders}
+const maxAgeCookieExpired = 1 * 24 * 60 * 60 * 1000
+ 
+const CONST = { httpStatus, OAuthProviders, maxAgeCookieExpired}
 
 
 module.exports = CONST

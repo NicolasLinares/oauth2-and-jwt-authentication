@@ -1,6 +1,5 @@
 const { Schema, model, ObjectId } = require("mongoose")
 const { isEmail } = require("validator")
-const DuplicatedEmailError = require("../utils/CustomErrors")
 const logger = require("../services/log")
 const bcrypt = require("bcrypt")
 
@@ -50,8 +49,6 @@ UserSchema.set('toJSON', {
 
 
 UserSchema.pre('save', async function(next) {
-    let User = model('User', UserSchema)
-
     const salt = await bcrypt.genSalt()
     this.password = await bcrypt.hash(this.password, salt)
     next()

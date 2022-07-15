@@ -21,7 +21,6 @@ function App() {
     }
     function handleLogout(){
         setLoggedIn(false)
-
     }
 
     return (
