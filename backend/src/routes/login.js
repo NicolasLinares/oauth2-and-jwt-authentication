@@ -2,10 +2,6 @@ const express = require("express")
 const router = express.Router()
 const authController = require("../controllers/authController")
 const middlewares = require("../middlewares")
-const passport = require("passport")
-const strategy = require("../services/auth")
-
-passport.use(strategy.jwt)
 
 router.post('/login', authController.login)
 

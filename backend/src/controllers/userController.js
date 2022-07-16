@@ -4,33 +4,25 @@ const userManager = require("../managers/userManager")
 
 function UserController() {
 
+
     this.getUserById = (request, response) => {
         const id = request.params.id
-        
-        userManager.getUserById(id)
-            .then(user => {
-                httpResponse[CONST.httpStatus.OK](response, user)
-            })
-            .catch(err => {
-                httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
-            })
-    }
+        const providerId = request.query?.providerId
 
-    this.updateUserById = (request, response) => {
-        const id = request.params.id
-        const update = request.body
-        userManager.updateUser(id, update)
-            .then((updatedUser) => {
-                httpResponse[CONST.httpStatus.OK](response, updatedUser)
-            })
-            .catch(err => {
-                httpResponse[CONST.httpStatus.CONFLICT](response, err)
-            })
+        userManager.getUserById(id)
+        .then(user => {
+            let userTransformed = userToDTO(user, providerId)
+            httpResponse[CONST.httpStatus.OK](response, userTransformed)
+        })
+        .catch(err => {
+            httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
+        })
+
     }
 
     this.deleteUserById = (request, response) => {
         const id = request.params.id
-        userManager.deleteUser(id)
+        userManager.deleteUserById(id)
             .then(() => {
                 httpResponse[CONST.httpStatus.NO_CONTENT](response)
             })
@@ -39,16 +31,19 @@ function UserController() {
             })
     }
 
-    this.getAllUsers = (request, response) => {
-        userManager.getAllUsers()
-            .then(users => {
-                httpResponse[CONST.httpStatus.OK](response, users)
-            })
-            .catch(err => {
-                httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
-            })
-    }
 
+    function userToDTO (user, providerId = null) {
+        if (providerId) {
+            let { providers } = user
+            let providerInformation = providers.find(p => p.providerUserId === providerId)
+            user.picture = providerInformation.picture
+            user.login = providerInformation.loginName
+        }
+        delete user.providers
+        delete user.password
+        console.log(user)
+        return user
+    }
 }
 
 const userController = new UserController()

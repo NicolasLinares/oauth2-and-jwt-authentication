@@ -2,10 +2,16 @@ import axios from "axios"
 import { CONST } from "config"
 
 
-export const getUserById = async (id) => {
+export const getUserById = async (id, providerId = null) => {
     if (!id) {
         throw "id cannot be null or undefined"
     }
 
-    return axios.get(CONST.uri.resources.USERS + id, { withCredentials: true })
+    let uri = CONST.uri.resources.USERS + id
+
+    if (providerId) {
+        uri = `${uri}?providerId=${providerId}`
+    }
+
+    return axios.get(uri, { withCredentials: true })
 }

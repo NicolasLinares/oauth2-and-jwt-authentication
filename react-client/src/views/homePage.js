@@ -17,7 +17,10 @@ function Spinner() {
 function UserInformation ({user}) {
     return (
         <div className='d-flex align-items-center mb-5'>
-            <img src={user.picture} className="avatar shadow me-2"/>
+            {
+                user.picture &&
+                <img src={user.picture} className="avatar shadow me-2"/>
+            }
             <div className='d-flex flex-column'>
                 <strong>{user.fullname || user.loginName}</strong>
                 <small>{user.email}</small>
@@ -28,14 +31,19 @@ function UserInformation ({user}) {
 
 function HomePage({handleLogout}) {
 
-    let [ userInformation, setUserInformation ] = useState(null)
+    const [ userInformation, setUserInformation ] = useState(null)
 
     let navigate = useNavigate()
 
     useEffect(() => {
-        let id = localStorage.getItem("id")
-        usersController.getUserById(id)
+        let sid = localStorage.getItem("sid")
+        sid = JSON.parse(sid)
+        let { id, providerId } = sid
+        usersController.getUserById(id, providerId)
             .then(({data}) => {
+                if (!data || data === "") {
+                    logout()
+                }
                 console.log(data)
                 setUserInformation(data)
             })
@@ -49,7 +57,7 @@ function HomePage({handleLogout}) {
 
     const logout = () => {
         handleLogout()
-        localStorage.removeItem("id")
+        localStorage.removeItem("sid")
         navigate("/")
     }
 

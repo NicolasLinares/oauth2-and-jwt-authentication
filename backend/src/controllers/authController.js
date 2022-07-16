@@ -3,41 +3,21 @@ const userManager = require("../managers/userManager")
 const logger = require("../services/log")
 const CONST = require("../utils/constants")
 var httpResponse = require("../utils/responses")
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
 const bcrypt = require("bcrypt")
 const DuplicatedEmailError = require("../utils/CustomErrors")
+const generateJWT = require("../utils/jwt")
 
 function AuthController() {
 
     this.getUserSession = (request, response) => {
-        let providerUserData = request.user
-        userManager.getUserByProviderId(providerUserData.providerUserId)
-            .then((fullUserData) => {
-                return userManager.updateUserById(fullUserData.id, { updated: Date.now() })
-            })
-            .then((fullUserData) => {                
-                const publicUserInfo = {
-                    id: fullUserData.id,
-                    fullname: fullUserData.fullname,
-                    email: fullUserData.email,
-                    providerName: providerUserData.providerName,
-                    loginName: providerUserData.loginName,
-                    picture: providerUserData.picture,
-                    updated: fullUserData.updated,
-                    created: fullUserData.created
-                }
-
-                const token = generateJWT(publicUserInfo.id, publicUserInfo.email)
-                response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
-                
-                logger.info(`Session started for user [${publicUserInfo.email}]`)
-                return httpResponse[CONST.httpStatus.OK](response)
-            })
-            .catch((error) => {
-                const message = `Imposible to get user session: ${error}`
-                logger.error(message)
-                return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
-            })
+        const jwtToken = request.cookies.jwt
+        let { id, email, providerId } = jwt.decode(jwtToken)
+        let authData = {
+            id: id, 
+            providerId: providerId
+        }
+        return httpResponse[CONST.httpStatus.OK](response, { sid : authData })
     }
 
     this.login = async (request, response) => {
@@ -60,7 +40,11 @@ function AuthController() {
             const token = generateJWT(user.id, user.email)
             response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
             logger.info(`Session started for user [${user.email}]`)
-            return httpResponse[CONST.httpStatus.OK](response, { id: user.id, })
+            
+            let authData = {
+                id: user.id
+            }
+            return httpResponse[CONST.httpStatus.OK](response, { sid: authData })
         } catch(error) {
             const message = `Imposible to login user: ${error}`
             logger.error(message)
@@ -76,7 +60,11 @@ function AuthController() {
             const token = generateJWT(user.id, user.email)
             response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
             
-            return httpResponse[CONST.httpStatus.CREATED](response, createdUser.id)
+            let authData = {
+                id: createdUser.id, 
+                providerId: null
+            }
+            return httpResponse[CONST.httpStatus.CREATED](response, {sid : authData})
         } catch(error) {
 
             // Handled errors
@@ -90,15 +78,6 @@ function AuthController() {
             return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
         }
     }
-
-
-    const generateJWT = (userId, userEmail) => {
-        return jwt.sign({
-            id: userId,
-            email: userEmail,
-        }, process.env.TOKEN_SECRET)
-    }
-
 
     const handleRegisterValidationErrors = (err) => {
         let errors = {

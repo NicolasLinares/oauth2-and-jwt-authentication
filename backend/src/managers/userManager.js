@@ -5,34 +5,9 @@ function UserManager() {
     const database = require("../services/database");
     const logger = require("../services/log")
 
-    this.getUserByEmail = (email) => {
-        return database.getUserByEmail(email)
-    }
-
-    this.getUserById = (id) => {
-        return database.getUserById(id)
-    }
-
-    this.getUserByProviderId = (providerUserId) => {
-        return database.getUserByProviderId(providerUserId)
-    }
-
-    this.updateUserById = (id, jsonData) => {
-        return database.updateUser(id, jsonData)
-    }
-
-    this.deleteUserById = (id) => {
-        return database.deleteUser(id)
-    }
-
-    this.getAllUsers = () => {
-        return database.getUsers()
-    }
-
     this.createUser = (user) => {
-        return database.addUser(user)
+        return database.createUser(user)
     }
-
 
     this.findOrCreate = (user) => {
         if (!user.email) {
@@ -45,9 +20,9 @@ function UserManager() {
                     let newUser = {
                         fullname: user.name,
                         email: user.email,
-                    }
+                    }  
                     logger.info("Creating new user...")
-                    return database.addUser(newUser)
+                    return database.createUser(newUser)
                 }
                 return existsUser
             }).then(savedUser => {
@@ -64,16 +39,27 @@ function UserManager() {
                     }
                     logger.info(`Register user with id "${savedUser.id}" from ${user.provider} OAuth 2.0`)
                     return database.addProviderUser(newExternalUser)
-                        .then(() => {
-                            return newExternalUser
-                        })
                 }
-
                 return existsExternalUser
             })
     }
-}
 
+    this.getUserByEmail = (email) => {
+        return database.getUserByEmail(email)
+    }
+
+    this.getUserById = (id) => {
+        return database.getUserById(id)
+    }
+
+    this.getUserByProviderId = (providerUserId) => {
+        return database.getUserByProviderId(providerUserId)
+    }
+
+    this.deleteUserById = (id) => {
+        return database.deleteUserById(id)
+    }
+}
 
 const userManager = new UserManager()
 

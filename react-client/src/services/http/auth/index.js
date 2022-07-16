@@ -54,14 +54,12 @@ export const startWithOAuth2 = (providerUrl) => {
     return new Promise((resolve, reject) => {
         timer = setInterval(() => {
             if (authWindow && authWindow.closed) {
-                fetchUser()
-                    .then((response) => {
-                        resolve(response.data)
-                    })
-                    .catch((error) => {
-                        console.error(error)
-                        reject(error)
-                    })
+                fetchUser().then((response) => {
+                    resolve(response)
+                }).catch((error) => {
+                    console.error(error)
+                    reject(error)
+                })
                 timer && clearInterval(timer)
             }
         }, 500)
@@ -70,12 +68,4 @@ export const startWithOAuth2 = (providerUrl) => {
     function fetchUser () {
         return axios.get(CONST.uri.auth.GET_USER_SESSION, { withCredentials: true })
     }
-}
-
-
-
-
-
-const manageSuccessfulLogin = (data) => {
-    console.log("manage: " + data)
 }

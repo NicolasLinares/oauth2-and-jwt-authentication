@@ -23,8 +23,8 @@ function LoginPage({handleLogin}) {
     let navigate = useNavigate()
 
     useEffect(() => {
-        let id = localStorage.getItem("id")
-        if (!id) {
+        let sid = localStorage.getItem("sid")
+        if (!sid) {
             return
         }
         handleLogin()
@@ -55,15 +55,15 @@ function LoginPage({handleLogin}) {
     }
 
     const onSuccessLogin = function ({data}) {
-        let { id } = data
+        let { sid } = data
 
-        if (!id) {
+        if (!sid) {
             let error = "An error occurred during the login process"
             console.log(error)
             setMessageError(error)
             return
         }
-        localStorage.setItem("id", id)
+        localStorage.setItem("sid", JSON.stringify(sid))
         handleLogin()
         navigate("/home")
     }

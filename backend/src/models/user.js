@@ -9,12 +9,12 @@ const UserSchema = new Schema({
     },
     fullname: { 
         type: String,
-        required: [ true, "Please enter a full name"],
+        //required: [ true, "Please enter a full name"],
         maxlength: [ 64, "Maximum full name length is 64"]
     },
     password: {
         type: String,
-        required: [ true, "Please enter a password"],
+        //required: [ true, "Please enter a password"],
         maxlength: [ 64, "Maximum password length is 64"]
     },
     email: { 
@@ -49,8 +49,10 @@ UserSchema.set('toJSON', {
 
 
 UserSchema.pre('save', async function(next) {
-    const salt = await bcrypt.genSalt()
-    this.password = await bcrypt.hash(this.password, salt)
+    if (this.password) {
+        const salt = await bcrypt.genSalt()
+        this.password = await bcrypt.hash(this.password, salt)
+    }
     next()
 })
 

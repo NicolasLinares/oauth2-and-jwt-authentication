@@ -1,5 +1,5 @@
 function MongoDB() {
-    
+
     const logger = require("../log")
     const mongoose = require("mongoose")
     const connectionString = process.env.DB_CONNECTION_STRING
@@ -7,16 +7,16 @@ function MongoDB() {
 
     this.connect = () => {
 
-        mongoose.connection.on("error", function(err) {
+        mongoose.connection.on("error", function (err) {
             logger.error("Database connection error: " + err);
         });
 
-        mongoose.connection.on("disconnected", function() {
+        mongoose.connection.on("disconnected", function () {
             logger.info("Database disconnected");
         });
 
-        process.on('SIGINT', function() {
-            mongoose.connection.close(function() {
+        process.on('SIGINT', function () {
+            mongoose.connection.close(function () {
                 logger.info('Database process terminated');
                 process.exit(0);
             });
@@ -33,18 +33,26 @@ function MongoDB() {
         mongoose.connection.close();
     }
 
-    this.getUserById = (id) => {
-        if (!id) {
-            throw "id cannot be null or undefined"
-        }
 
-        return User.findById(id)
-            .then((user) => {
-                return user?.toJSON()
+    this.createUser = (user) => {
+        if (!user) {
+            throw "user cannot be null or undefined"
+        }
+        const { fullname = "", email, password = "" } = user;
+
+        const newUser = new User({
+            fullname: fullname,
+            email: email,
+            password: password,
+        })
+
+        return newUser.save()
+            .then((savedUser) => {
+                return savedUser?.toJSON()
             })
     }
 
-    this.deleteUser = (id) => {
+    this.deleteUserById = (id) => {
         if (!id) {
             throw "id cannot be null or undefined"
         }
@@ -69,26 +77,19 @@ function MongoDB() {
             })
     }
 
-    this.addUser = (user) => {
-        if (!user) {
-            throw "user cannot be null or undefined"
+    this.getUserById = (id) => {
+        if (!id) {
+            throw "id cannot be null or undefined"
         }
-        const { fullname, email, password } = user;
 
-        const newUser = new User({
-            fullname: fullname,
-            email: email,
-            password: password,
-        })
-
-        return newUser.save()
-            .then((savedUser) => {
-                return savedUser?.toJSON()
+        return User.findById(id)
+            .then((user) => {
+                return user?.toJSON()
             })
     }
 
     this.getUserByEmail = (email) => {
-        return User.findOne({email: email})
+        return User.findOne({ email: email })
             .then((user) => {
                 return user?.toJSON()
             })
@@ -98,9 +99,9 @@ function MongoDB() {
         if (!providerUserId) {
             throw "providerUserId cannot be null or undefined"
         }
-        return User.findOne({ "providers.providerUserId" : providerUserId })
+        return User.findOne({ "providers.providerUserId": providerUserId })
             .then((user) => {
-                return user?.toJSON()
+                return user?.toJSON(providerUserId)
             })
     }
 
@@ -108,31 +109,31 @@ function MongoDB() {
         if (!user) {
             throw "user cannot be null or undefined"
         }
-        let { userId, providerUserId, providerName, loginName, picture } = user
-
-        if (!userId) {
+        if (!user.userId) {
             throw "userId fields cannot be null or undefined"
         }
-        if (!providerUserId) {
+        if (!user.providerUserId) {
             throw "providerUserId fields cannot be null or undefined"
         }
-        if (!providerName) {
+        if (!user.providerName) {
             throw "providerName fields cannot be null or undefined"
         }
+        let { userId, providerUserId, providerName, loginName = "", picture = "" } = user
 
-        return User.findByIdAndUpdate(userId, 
-            {$push: { 
+        return User.findByIdAndUpdate(userId, {
+            $push: {
                 providers: {
                     providerUserId: providerUserId,
                     providerName: providerName,
                     loginName: loginName,
                     picture: picture
                 }
-            }},
-            { new : true })
-            .then((savedUser) => {
-                return savedUser?.toJSON()
-            })
+            }}, {
+                new: true
+            }
+        ).then((savedUser) => {
+            return savedUser?.toJSON()
+        })
     }
 
     this.getProviderUser = (userId, provider) => {
