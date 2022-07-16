@@ -33,7 +33,7 @@ function HomePage({handleLogout}) {
     let navigate = useNavigate()
 
     useEffect(() => {
-        let id = sessionStorage.getItem("id")
+        let id = localStorage.getItem("id")
         usersController.getUserById(id)
             .then(({data}) => {
                 console.log(data)
@@ -49,7 +49,7 @@ function HomePage({handleLogout}) {
 
     const logout = () => {
         handleLogout()
-        sessionStorage.removeItem("id")
+        localStorage.removeItem("id")
         navigate("/")
     }
 

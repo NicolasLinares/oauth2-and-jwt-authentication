@@ -23,6 +23,11 @@ function NpmLogger() {
         this.logger.error(new Date().toUTCString(), text)
     }
 
+    this.debug = (text) => {
+        checkLoggerState(this.logger)
+        this.logger.verbose(new Date().toUTCString(), text)
+    }
+
     this.trace = (text) => {
         checkLoggerState(this.logger)
         this.logger.verbose(new Date().toUTCString(), text)

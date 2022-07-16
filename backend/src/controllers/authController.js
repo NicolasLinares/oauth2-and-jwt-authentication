@@ -27,7 +27,7 @@ function AuthController() {
                     created: fullUserData.created
                 }
 
-                const token = generateJWT(user.id)
+                const token = generateJWT(publicUserInfo.id, publicUserInfo.email)
                 response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
                 
                 logger.info(`Session started for user [${publicUserInfo.email}]`)
@@ -57,7 +57,7 @@ function AuthController() {
                 return httpResponse[CONST.httpStatus.UNAUTHORIZED](response, message)
             }
 
-            const token = generateJWT(user.id)
+            const token = generateJWT(user.id, user.email)
             response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
             logger.info(`Session started for user [${user.email}]`)
             return httpResponse[CONST.httpStatus.OK](response, { id: user.id, })
@@ -73,7 +73,7 @@ function AuthController() {
 
         try {
             const createdUser = await userManager.createUser(user)
-            const token = generateJWT(user.id)
+            const token = generateJWT(user.id, user.email)
             response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
             
             return httpResponse[CONST.httpStatus.CREATED](response, createdUser.id)
@@ -92,9 +92,10 @@ function AuthController() {
     }
 
 
-    const generateJWT = (userId) => {
+    const generateJWT = (userId, userEmail) => {
         return jwt.sign({
-            id: userId
+            id: userId,
+            email: userEmail,
         }, process.env.TOKEN_SECRET)
     }
 

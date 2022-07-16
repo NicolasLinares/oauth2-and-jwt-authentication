@@ -23,7 +23,7 @@ function LoginPage({handleLogin}) {
     let navigate = useNavigate()
 
     useEffect(() => {
-        let id = sessionStorage.getItem("id")
+        let id = localStorage.getItem("id")
         if (!id) {
             return
         }
@@ -63,7 +63,7 @@ function LoginPage({handleLogin}) {
             setMessageError(error)
             return
         }
-        sessionStorage.setItem("id", id)
+        localStorage.setItem("id", id)
         handleLogin()
         navigate("/home")
     }

@@ -7,13 +7,16 @@ const jwt = require('jsonwebtoken');
 
 const isUserAuthenticated = (request, response, next) => {
 
-	const jwtToken = request.cookies.jwt;
+	logger.debug("Verifying JWT...")
 
+	const jwtToken = request.cookies.jwt;
 	jwt.verify(jwtToken, process.env.TOKEN_SECRET, (error, decodedToken) => {
 		if (error) {
-			logger.error(`Error during JWT session verification. ${error}`)
+			logger.error(`Error during JWT verification: ${error}`)
 			httpResponse[CONST.httpStatus.UNAUTHORIZED](response, "You must login first!")
 		} else {
+			let { id, email } = decodedToken
+			logger.debug(`Successful JWT verification for user with email [${email}]`)
 			next()
 		}
 	}) 
