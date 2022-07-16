@@ -41,7 +41,6 @@ function UserController() {
         }
         delete user.providers
         delete user.password
-        console.log(user)
         return user
     }
 }
