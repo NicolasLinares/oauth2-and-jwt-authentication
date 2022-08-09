@@ -1,72 +1,57 @@
 import React from 'react'
-import 'bootstrap-icons/font/bootstrap-icons.css'
-
+import { useForm } from "react-hook-form"
+import { LoginButton } from 'components/buttons'
+import { EmailInput, PasswordInput } from 'components/inputs'
 import "./loginForm.css"
-import { CONST } from "config"
-import { authController, usersController } from "services/http"
 
-function LoginForm(props) {
-    let startWithGitHub = function (e) {
+function CredentialsLoginForm ({onSubmit, messageError}) {
+
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            email: "",
+            password: ""
+        }
+    })
+
+    const handleContinueWithEmail = (e) => {
         e.preventDefault()
-        authController.startWith(CONST.uri.provider.GITHUB, usersController.fetchUser)
-    }
 
-    let startWithGoogle = function (e) {
-        e.preventDefault()
-        authController.startWith(CONST.uri.provider.GOOGLE, usersController.fetchUser)
-    }
-
-    let getAllUsers = function (e) {
-        e.preventDefault()
-        usersController.getUsers()
-    }
-
-
-    let signUpUrl = "#"
-    if (props.signUpLink && typeof props.signUpLink == "string") {
-        signUpUrl = props.signUpLink
+        handleSubmit((credentials) => {
+            onSubmit(credentials)
+        })(e)
     }
 
     return (
-        <form className='login-card'>
+        <form onSubmit={handleContinueWithEmail}>
+            <EmailInput 
+                onRegister={register("email", {
+                    required: true,
+                    pattern: {
+                        value: /.+@.+\.(.){2,5}$/i,
+                        message: "Invalid email address"
+                    }
+                })}
+                inputName="email"
+                label="Email address"
+                placeholder="Enter your email"
+            />
+            <PasswordInput
+                onRegister={register("password", {
+                    required: true            
+                })}
+                inputName="password"
+                label="Password"
+                placeholder="Enter password"
+            />
 
-            <h2 className='mb-3'>Welcome</h2>
+            <div className="mt-3 mx-2 message-error" id="message-error">{messageError}</div>
 
-            <input type="text" placeholder='Email address' className='form-control border-secondary'></input>
-            <div className="input-group mt-2">
-                <input type="password" name="password" autoComplete='true' className="form-control border-secondary" placeholder="Password"></input>
-                <button className="btn btn-outline-secondary border-secondary" type="button">
-                    <i className="bi bi-eye"></i>
-                </button>
-            </div>
-
-            <div className='or-container my-4'>
-                <p className='or-divider'>
-                    or
-                </p>
-            </div>
-
-            <button className='btn btn-dark shadow p-3 d-flex justify-content-center' onClick={startWithGitHub}>
-                <i className="bi bi-github mx-2"></i>
-                <span>
-                    Continue with Github
-                </span>
-            </button>
-            <button className='btn btn-light shadow mt-2 p-3 d-flex justify-content-center' onClick={startWithGoogle}>
-                <i className="bi bi-google mx-2"></i>
-                <span>
-                    Continue with Google
-                </span>
-            </button>
-
-            <p className='mt-4'>
-                Don´t have an account?
-                <a href={signUpUrl} className='mx-2'>Sign up</a>
-            </p>
-
+            <LoginButton
+                textContent={"Continue with email"}
+                onClick={onSubmit}
+            />
         </form>
     )
 }
 
-
-export default LoginForm
+export default CredentialsLoginForm

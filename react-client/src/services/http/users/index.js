@@ -1,33 +1,17 @@
 import axios from "axios"
-
 import { CONST } from "config"
 
-export const fetchUser = async () => {
 
-    const response = await axios.get(CONST.uri.user.AUTH, { withCredentials: true })
-        .catch((error) => {
-            console.error(error)
-        })
-
-    if (response && response.data) {
-        console.log("User: ", response.data)
-    }
-}
-
-
-
-export const getUsers = async () => {
-    let uri = "http://localhost:3080/api/v1/users"
-
-    const response = await axios.get(uri, { withCredentials: true })
-        .catch((error) => {
-            console.error(error)
-        })
-
-    if (response && response.data) {
-        console.log("Data: ", response.data)
+export const getUserById = async (id, providerId = null) => {
+    if (!id) {
+        throw "id cannot be null or undefined"
     }
 
+    let uri = CONST.uri.resources.USERS + id
 
+    if (providerId) {
+        uri = `${uri}?providerId=${providerId}`
+    }
 
+    return axios.get(uri, { withCredentials: true })
 }

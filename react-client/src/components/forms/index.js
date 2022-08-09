@@ -1,3 +1,7 @@
-import LoginForm from './loginForm'
+import CredentialsLoginForm from './loginForm'
+import RegisterForm from './registerForm'
 
-export { LoginForm }
+export {
+    CredentialsLoginForm,
+    RegisterForm
+}

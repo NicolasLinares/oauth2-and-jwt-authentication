@@ -1,7 +1,5 @@
 import React from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-
-
 import "./successLoginPage.css"
 
 function SuccessLoginPage(props) {

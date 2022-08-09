@@ -6,6 +6,7 @@ const httpStatus = {
     UNAUTHORIZED: 401,
     NOT_FOUND: 404,
     CONFLICT: 409,
+    INTERNAL_ERROR: 500
 }
 
 
@@ -14,8 +15,9 @@ const OAuthProviders = {
     Google: "Google",
 }
 
-
-const CONST = { httpStatus, OAuthProviders}
+const maxAgeCookieExpired = 1 * 24 * 60 * 60 * 1000
+ 
+const CONST = { httpStatus, OAuthProviders, maxAgeCookieExpired}
 
 
 module.exports = CONST

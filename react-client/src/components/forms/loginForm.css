@@ -1,3 +1,31 @@
+.form-floating {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: lightgrey;
+}
+
+.form-floating > label {
+    color: gray
+}
+
+button {
+    height: 58px;
+}
+
+#password-btn {
+    color:#909090
+}
+
+.message-error {
+    color: #dc3545
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545
+}
+
 
 .login-card {
     width: 300px;
@@ -15,7 +43,7 @@
     background-color: white;
     padding-inline: 10px;
     margin:auto;
-    color: #646464
+    color: dimgray
 }
 
 .or-divider::after {
@@ -25,8 +53,14 @@
     top: 50%;
     width: 100%;
     height: 1px;
-    background: #a5a5a5;
+    background: lightgray;
     z-index: -1;
+}
+
+button, input, .input-group {
+    border-width: 1px !important;
+    border-color: #d9d9d9 !important;
+    height: 45px;
 }
 
 p {
@@ -35,5 +69,13 @@ p {
 }
 
 a {
-    color: #3982e8;
+    color: #0d6efd;
+}
+
+i, svg {
+    font-size: 1.3rem;
+}
+
+p {
+    color: black
 }
