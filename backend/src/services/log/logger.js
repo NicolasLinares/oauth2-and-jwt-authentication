@@ -4,7 +4,6 @@ const NpmLogger = require("./npmLogger")
 function Logger() {
 
     //this.log = new ConsoleLogger()
-
     this.log = new NpmLogger()
 
     this.http = (text) => {
