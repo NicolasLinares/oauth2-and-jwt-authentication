@@ -1,14 +1,14 @@
-
-const userManager = require("../managers/userManager")
-const logger = require("../services/log")
-const CONST = require("../utils/constants")
-var httpResponse = require("../utils/responses")
-const jwt = require('jsonwebtoken')
-const bcrypt = require("bcrypt")
-const DuplicatedEmailError = require("../utils/CustomErrors")
-const generateJWT = require("../utils/jwt")
-
 function AuthController() {
+
+    const userManager = require("../managers/userManager")
+    const logger = require("../services/log")
+    const CONST = require("../utils/constants")
+    var httpResponse = require("../utils/responses")
+    const jwt = require('jsonwebtoken')
+    const bcrypt = require("bcrypt")
+    const DuplicatedEmailError = require("../utils/customErrors")
+    const generateJWT = require("../utils/jwt")
+    
 
     this.getUserSession = (request, response) => {
         const jwtToken = request.cookies.jwt
@@ -102,8 +102,6 @@ function AuthController() {
     }
 
 }
-
-
 
 
 const authController = new AuthController()

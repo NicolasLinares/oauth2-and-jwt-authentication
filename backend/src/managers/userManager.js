@@ -1,5 +1,3 @@
-
-
 function UserManager() {
 
     const database = require("../services/database");

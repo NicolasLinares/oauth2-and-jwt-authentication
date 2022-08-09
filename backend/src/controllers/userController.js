@@ -1,9 +1,8 @@
-const CONST = require("../utils/constants")
-var httpResponse = require("../utils/responses")
-const userManager = require("../managers/userManager")
-
 function UserController() {
 
+    const CONST = require("../utils/constants")
+    var httpResponse = require("../utils/responses")
+    const userManager = require("../managers/userManager")    
 
     this.getUserById = (request, response) => {
         const id = request.params.id

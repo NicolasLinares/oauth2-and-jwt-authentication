@@ -30,7 +30,7 @@ function MongoDB() {
     }
 
     this.close = () => {
-        mongoose.connection.close();
+        return mongoose.connection.close();
     }
 
 
@@ -63,17 +63,6 @@ function MongoDB() {
                     throw `User not found`
                 }
                 return deletedUser?.toJSON()
-            })
-    }
-
-    this.updateUser = (id, updateFields) => {
-        if (!id) {
-            throw "id cannot be null or undefined"
-        }
-
-        return User.findByIdAndUpdate(id, updateFields, { new: true })
-            .then((updatedUser) => {
-                return updatedUser?.toJSON()
             })
     }
 
@@ -134,17 +123,6 @@ function MongoDB() {
         ).then((savedUser) => {
             return savedUser?.toJSON()
         })
-    }
-
-    this.getProviderUser = (userId, provider) => {
-        if (!userId || !provider) {
-            throw "id cannot be null or undefined"
-        }
-
-        return User.findById(userId)
-            .then((user) => {
-                return user?.toJSON()
-            })
     }
 
     this.getUsers = () => {
