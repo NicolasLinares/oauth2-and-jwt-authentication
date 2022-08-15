@@ -4,7 +4,6 @@ function AuthController(database, logger) {
     this.logger = logger
 
     const CONST = require("../utils/constants")
-    var httpResponse = require("../utils/responses")
     const bcrypt = require("bcrypt")
     const DuplicatedEmailError = require("../utils/customErrors")
     const jwtUtil = require("../utils/jwt")
@@ -12,7 +11,7 @@ function AuthController(database, logger) {
     this.getUserSession = (request, response) => {
         const jwtToken = request.cookies.jwt
         let authData = jwtUtil.decodeJWT(jwtToken)
-        return httpResponse[CONST.httpStatus.OK](response, { sid : authData })
+        response.json({ sid : authData })
     }
 
     this.login = async (request, response) => {
@@ -23,15 +22,15 @@ function AuthController(database, logger) {
             if (!user) {
                 const message = "Email not found"
                 this.logger.info(`Login rejected [${email}]. ${message}`)
-                return httpResponse[CONST.httpStatus.NOT_FOUND](response, message)
+                return response.status(CONST.httpStatus.NOT_FOUND).json({ error: message })
             }
             const isValidPassword = await bcrypt.compare(password, user.password)
             if (!isValidPassword) {
                 const message = "Wrong password"
                 this.logger.info(`Login rejected [${email}]. ${message}`)
-                return httpResponse[CONST.httpStatus.UNAUTHORIZED](response, message)
+                return response.status(CONST.httpStatus.UNAUTHORIZED).json({ error: message })
             }
-
+ 
             const token = jwtUtil.generateJWT(user.id, user.email)
             response.cookie("jwt", token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
             this.logger.info(`Session started for user [${user.email}]`)
@@ -39,11 +38,38 @@ function AuthController(database, logger) {
             let authData = {
                 id: user.id
             }
-            return httpResponse[CONST.httpStatus.OK](response, { sid: authData })
+            response.json({ sid: authData })
         } catch(error) {
             const message = `Imposible to login user: ${error}`
             this.logger.error(message)
-            return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
+            response.status(CONST.httpStatus.INTERNAL_ERROR).json({ error: message })
+        }
+    }
+
+    this.register = async (request, response) => {
+        const user = request.body
+
+        try {
+            const createdUser = await this.database.createUser(user)
+            const token = jwtUtil.generateJWT(user.id, user.email)
+            response.cookie("jwt", token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
+            
+            let authData = {
+                id: createdUser.id, 
+                providerId: null
+            }
+            response.status(CONST.httpStatus.CREATED).json({ sid : authData })
+        } catch(error) {
+
+            // Handled errors
+            const validationErrors = handleRegisterValidationErrors(error)
+            if (validationErrors) {
+                return response.status(CONST.httpStatus.BAD_REQUEST).json({ error: validationErrors })
+            }
+
+            this.logger.error(error)
+            const message = "Imposible to register user"
+            response.status(CONST.httpStatus.INTERNAL_ERROR).json({ error: message})
         }
     }
 
@@ -61,7 +87,7 @@ function AuthController(database, logger) {
             user = await findOrCreateUserOAuth2(userProfile)
         } catch(error)  {
             this.logger.error(error)
-            response.redirect(process.env.FAILED_LOGIN_REDIRECT)
+            return response.redirect(process.env.FAILED_LOGIN_REDIRECT)
         }
         const token = jwtUtil.generateJWT(user.id, user.email, userProfile.id)
         response.cookie("jwt", token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
@@ -82,38 +108,11 @@ function AuthController(database, logger) {
             user = await findOrCreateUserOAuth2(userProfile)
         } catch(error)  {
             this.logger.error(error)
-            response.redirect(process.env.FAILED_LOGIN_REDIRECT)
+            return response.redirect(process.env.FAILED_LOGIN_REDIRECT)
         }
         const token = jwtUtil.generateJWT(user.id, user.email, userProfile.id)
         response.cookie("jwt", token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
         response.redirect(process.env.SUCCESSFUL_LOGIN_REDIRECT)
-    }
-
-    this.register = async (request, response) => {
-        const user = request.body
-
-        try {
-            const createdUser = await this.database.createUser(user)
-            const token = jwtUtil.generateJWT(user.id, user.email)
-            response.cookie("jwt", token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
-            
-            let authData = {
-                id: createdUser.id, 
-                providerId: null
-            }
-            return httpResponse[CONST.httpStatus.CREATED](response, {sid : authData})
-        } catch(error) {
-
-            // Handled errors
-            const errors = handleRegisterValidationErrors(error)
-            if (errors) {
-                return httpResponse[CONST.httpStatus.BAD_REQUEST](response, errors)
-            }
-
-            this.logger.error(error)
-            const message = "Imposible to register user"
-            return httpResponse[CONST.httpStatus.INTERNAL_ERROR](response, message)
-        }
     }
 
     //#region Auxiliar methods

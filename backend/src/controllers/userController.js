@@ -3,7 +3,6 @@ function UserController(database) {
     this.database = database
 
     const CONST = require("../utils/constants")
-    const httpResponse = require("../utils/responses")
 
     this.getUserById = (request, response) => {
         const id = request.params.id
@@ -11,11 +10,11 @@ function UserController(database) {
         
         this.database.getUserById(id)
             .then(user => {
-                let userTransformed = userToDTO(user, providerId)
-                httpResponse[CONST.httpStatus.OK](response, userTransformed)
+                let dto = userToDTO(user, providerId)
+                response.json(dto)
             })
             .catch(err => {
-                httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
+                response.status(CONST.httpStatus.NOT_FOUND).json({ error: err })
             })
 
     }
@@ -23,16 +22,18 @@ function UserController(database) {
     this.deleteUserById = (request, response) => {
         const id = request.params.id
         this.database.deleteUserById(id)
-            .then(() => {
-                httpResponse[CONST.httpStatus.NO_CONTENT](response)
+            .then((deletedUser) => {
+                let dto = userToDTO(deletedUser)
+                response.json(dto)
             })
             .catch(err => {
-                httpResponse[CONST.httpStatus.CONFLICT](response, err)
+                response.status(CONST.httpStatus.CONFLICT).json({ error: err })
             })
     }
 
+    //#region Auxiliar methods
 
-    function userToDTO (user, providerId = null) {
+    const userToDTO = (user, providerId = null) => {
         if (providerId) {
             let { providers } = user
             let providerInformation = providers.find(p => p.providerUserId === providerId)
@@ -43,6 +44,8 @@ function UserController(database) {
         delete user.password
         return user
     }
+
+    //#endregion
 }
 
 
