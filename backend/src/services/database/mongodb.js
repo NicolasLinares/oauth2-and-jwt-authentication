@@ -8,19 +8,19 @@ function MongoDB() {
     this.connect = () => {
 
         mongoose.connection.on("error", function (err) {
-            logger.error("Database connection error: " + err);
-        });
+            logger.error("Database connection error: " + err)
+        })
 
         mongoose.connection.on("disconnected", function () {
-            logger.info("Database disconnected");
-        });
+            logger.info("Database disconnected")
+        })
 
-        process.on('SIGINT', function () {
+        process.on("SIGINT", function () {
             mongoose.connection.close(function () {
-                logger.info('Database process terminated');
-                process.exit(0);
-            });
-        });
+                logger.info("Database process terminated")
+                process.exit(0)
+            })
+        })
 
         if (!connectionString) {
             throw new Error("Impossible to connect to MongoDB database: connection string not stabilished")
@@ -30,7 +30,7 @@ function MongoDB() {
     }
 
     this.close = () => {
-        return mongoose.connection.close();
+        return mongoose.connection.close()
     }
 
 
@@ -38,7 +38,7 @@ function MongoDB() {
         if (!user) {
             throw "user cannot be null or undefined"
         }
-        const { fullname = "", email, password = "" } = user;
+        const { fullname = "", email, password = "" } = user
 
         const newUser = new User({
             fullname: fullname,
@@ -60,7 +60,7 @@ function MongoDB() {
         return User.findByIdAndDelete(id)
             .then((deletedUser) => {
                 if (!deletedUser) {
-                    throw `User not found`
+                    throw "User not found"
                 }
                 return deletedUser?.toJSON()
             })
@@ -118,8 +118,8 @@ function MongoDB() {
                     picture: picture
                 }
             }}, {
-                new: true
-            }
+            new: true
+        }
         ).then((savedUser) => {
             return savedUser?.toJSON()
         })

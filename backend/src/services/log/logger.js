@@ -1,9 +1,11 @@
-const ConsoleLogger = require("./consoleLogger")
-const NpmLogger = require("./npmLogger")
+
 
 function Logger() {
-
+    
+    //const ConsoleLogger = require("./consoleLogger")
     //this.log = new ConsoleLogger()
+    
+    const NpmLogger = require("./npmLogger")
     this.log = new NpmLogger()
 
     this.http = (text) => {

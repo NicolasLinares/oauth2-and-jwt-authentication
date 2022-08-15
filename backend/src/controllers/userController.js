@@ -1,37 +1,39 @@
-function UserController() {
+function UserController(database) {
+
+    this.database = database
 
     const CONST = require("../utils/constants")
-    var httpResponse = require("../utils/responses")
-    const userManager = require("../managers/userManager")    
 
     this.getUserById = (request, response) => {
         const id = request.params.id
         const providerId = request.query?.providerId
-
-        userManager.getUserById(id)
-        .then(user => {
-            let userTransformed = userToDTO(user, providerId)
-            httpResponse[CONST.httpStatus.OK](response, userTransformed)
-        })
-        .catch(err => {
-            httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
-        })
+        
+        this.database.getUserById(id)
+            .then(user => {
+                let dto = userToDTO(user, providerId)
+                response.json(dto)
+            })
+            .catch(err => {
+                response.status(CONST.httpStatus.NOT_FOUND).json({ error: err })
+            })
 
     }
 
     this.deleteUserById = (request, response) => {
         const id = request.params.id
-        userManager.deleteUserById(id)
-            .then(() => {
-                httpResponse[CONST.httpStatus.NO_CONTENT](response)
+        this.database.deleteUserById(id)
+            .then((deletedUser) => {
+                let dto = userToDTO(deletedUser)
+                response.json(dto)
             })
             .catch(err => {
-                httpResponse[CONST.httpStatus.CONFLICT](response, err)
+                response.status(CONST.httpStatus.CONFLICT).json({ error: err })
             })
     }
 
+    //#region Auxiliar methods
 
-    function userToDTO (user, providerId = null) {
+    const userToDTO = (user, providerId = null) => {
         if (providerId) {
             let { providers } = user
             let providerInformation = providers.find(p => p.providerUserId === providerId)
@@ -42,8 +44,12 @@ function UserController() {
         delete user.password
         return user
     }
+
+    //#endregion
 }
 
-const userController = new UserController()
+
+const database = require("../services/database")
+const userController = new UserController(database)
 
 module.exports = userController
