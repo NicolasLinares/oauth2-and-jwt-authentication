@@ -16,6 +16,6 @@ class SingletonLogger {
     }
 }
 
-const logger = SingletonLogger.getInstance();
+const logger = SingletonLogger.getInstance()
 
 module.exports = logger

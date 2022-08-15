@@ -39,7 +39,7 @@ const UserSchema = new Schema({
     }
 })
 
-UserSchema.set('toJSON', {
+UserSchema.set("toJSON", {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id
         delete returnedObject._id
@@ -48,7 +48,7 @@ UserSchema.set('toJSON', {
 })
 
 
-UserSchema.pre('save', async function(next) {
+UserSchema.pre("save", async function(next) {
     if (this.password) {
         const salt = await bcrypt.genSalt()
         this.password = await bcrypt.hash(this.password, salt)
@@ -56,17 +56,17 @@ UserSchema.pre('save', async function(next) {
     next()
 })
 
-UserSchema.post('save', function(doc, next) {
+UserSchema.post("save", function(doc, next) {
     let savedUser = doc
     logger.info(`User with email [${savedUser.email}] succesfully created`)
     next()
 })
 
-UserSchema.pre('findOneAndUpdate', function(next) {
+UserSchema.pre("findOneAndUpdate", function(next) {
     this.options.runValidators = true
     next()
-});
+})
 
-const User = model('User', UserSchema)
+const User = model("User", UserSchema)
 
 module.exports = User

@@ -9,13 +9,13 @@ function UserController() {
         const providerId = request.query?.providerId
 
         userManager.getUserById(id)
-        .then(user => {
-            let userTransformed = userToDTO(user, providerId)
-            httpResponse[CONST.httpStatus.OK](response, userTransformed)
-        })
-        .catch(err => {
-            httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
-        })
+            .then(user => {
+                let userTransformed = userToDTO(user, providerId)
+                httpResponse[CONST.httpStatus.OK](response, userTransformed)
+            })
+            .catch(err => {
+                httpResponse[CONST.httpStatus.NOT_FOUND](response, err)
+            })
 
     }
 

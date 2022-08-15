@@ -4,7 +4,7 @@ function AuthController() {
     const logger = require("../services/log")
     const CONST = require("../utils/constants")
     var httpResponse = require("../utils/responses")
-    const jwt = require('jsonwebtoken')
+    const jwt = require("jsonwebtoken")
     const bcrypt = require("bcrypt")
     const DuplicatedEmailError = require("../utils/customErrors")
     const generateJWT = require("../utils/jwt")
@@ -12,7 +12,7 @@ function AuthController() {
 
     this.getUserSession = (request, response) => {
         const jwtToken = request.cookies.jwt
-        let { id, email, providerId } = jwt.decode(jwtToken)
+        let { id, providerId } = jwt.decode(jwtToken)
         let authData = {
             id: id, 
             providerId: providerId
@@ -26,7 +26,7 @@ function AuthController() {
         try {
             const user = await userManager.getUserByEmail(email)
             if (!user) {
-                const message = `Email not found`
+                const message = "Email not found"
                 logger.info(`Login rejected [${email}]. ${message}`)
                 return httpResponse[CONST.httpStatus.NOT_FOUND](response, message)
             }
@@ -38,7 +38,7 @@ function AuthController() {
             }
 
             const token = generateJWT(user.id, user.email)
-            response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
+            response.cookie("jwt", token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
             logger.info(`Session started for user [${user.email}]`)
             
             let authData = {
@@ -58,7 +58,7 @@ function AuthController() {
         try {
             const createdUser = await userManager.createUser(user)
             const token = generateJWT(user.id, user.email)
-            response.cookie('jwt', token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
+            response.cookie("jwt", token, { httpOnly: true, maxAge: CONST.maxAgeCookieExpired })
             
             let authData = {
                 id: createdUser.id, 

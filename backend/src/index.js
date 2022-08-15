@@ -1,7 +1,7 @@
-require("dotenv").config();
+require("dotenv").config()
 const logger = require("./services/log/")
 const database = require("./services/database")
-const app = require('./app');
+const app = require("./app")
 
 logger.info("Deploying server...")
 

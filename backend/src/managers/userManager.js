@@ -1,6 +1,6 @@
 function UserManager() {
 
-    const database = require("../services/database");
+    const database = require("../services/database")
     const logger = require("../services/log")
 
     this.createUser = (user) => {
@@ -9,7 +9,7 @@ function UserManager() {
 
     this.findOrCreate = (user) => {
         if (!user.email) {
-            throw "required 'email' field is missing"
+            throw "required \"email\" field is missing"
         }
 
         return database.getUserByEmail(user.email)

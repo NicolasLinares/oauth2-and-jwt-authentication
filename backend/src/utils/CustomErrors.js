@@ -1,8 +1,8 @@
 
 class DuplicatedEmailError extends Error {
     constructor(message) {
-      super(message);
-      this.name = "DuplicatedEmailError";
+        super(message)
+        this.name = "DuplicatedEmailError"
     }
 }
 

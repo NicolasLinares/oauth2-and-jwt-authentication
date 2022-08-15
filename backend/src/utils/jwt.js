@@ -1,6 +1,6 @@
 
 const generateJWT = (userId, userEmail, provider = null) => {
-    return require('jsonwebtoken').sign({
+    return require("jsonwebtoken").sign({
         id: userId,
         email: userEmail,
         providerId: provider

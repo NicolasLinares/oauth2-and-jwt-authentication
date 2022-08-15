@@ -47,7 +47,7 @@ function ConsoleLogger() {
     }
 
     function buildLogEntry (level, text) {
-        return `${new Date().toUTCString()} [${level}]: ${text}`;
+        return `${new Date().toUTCString()} [${level}]: ${text}`
     }
 }
 
