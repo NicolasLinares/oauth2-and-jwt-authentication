@@ -1,14 +1,15 @@
-function UserController() {
+function UserController(database) {
+
+    this.database = database
 
     const CONST = require("../utils/constants")
-    var httpResponse = require("../utils/responses")
-    const userManager = require("../managers/userManager")    
+    const httpResponse = require("../utils/responses")
 
     this.getUserById = (request, response) => {
         const id = request.params.id
         const providerId = request.query?.providerId
-
-        userManager.getUserById(id)
+        
+        this.database.getUserById(id)
             .then(user => {
                 let userTransformed = userToDTO(user, providerId)
                 httpResponse[CONST.httpStatus.OK](response, userTransformed)
@@ -21,7 +22,7 @@ function UserController() {
 
     this.deleteUserById = (request, response) => {
         const id = request.params.id
-        userManager.deleteUserById(id)
+        this.database.deleteUserById(id)
             .then(() => {
                 httpResponse[CONST.httpStatus.NO_CONTENT](response)
             })
@@ -44,6 +45,8 @@ function UserController() {
     }
 }
 
-const userController = new UserController()
+
+const database = require("../services/database")
+const userController = new UserController(database)
 
 module.exports = userController

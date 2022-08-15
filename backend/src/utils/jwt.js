@@ -7,4 +7,11 @@ const generateJWT = (userId, userEmail, provider = null) => {
     }, process.env.TOKEN_SECRET)
 }
 
-module.exports = generateJWT
+const decodeJWT = (jwtToken) => {
+    return require("jsonwebtoken").decode(jwtToken)
+}
+
+module.exports = {
+    generateJWT,
+    decodeJWT  
+}
