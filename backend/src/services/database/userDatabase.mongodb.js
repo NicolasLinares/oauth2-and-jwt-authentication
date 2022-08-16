@@ -1,4 +1,4 @@
-function MongoDB() {
+function UserDatabaseMongoDB() {
 
     const logger = require("../log")
     const mongoose = require("mongoose")
@@ -133,4 +133,4 @@ function MongoDB() {
     }
 }
 
-module.exports = MongoDB
+module.exports = UserDatabaseMongoDB

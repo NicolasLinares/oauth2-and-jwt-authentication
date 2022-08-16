@@ -1,5 +1,7 @@
-const MongoDB = require("./mongodb")
+//const UserDatabaseMongoDB = require("./userDatabase.mongodb")
+const UserDatabaseMongoDBMock = require("./userDatabase.mongodb.mock")
 
-const database = new MongoDB()
+//const database = new UserDatabaseMongoDB()
+const database = new UserDatabaseMongoDBMock()
 
 module.exports = database
