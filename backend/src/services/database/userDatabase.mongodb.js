@@ -1,8 +1,8 @@
-function MongoDB() {
+function UserDatabaseMongoDB(dbConnectionString) {
 
     const logger = require("../log")
     const mongoose = require("mongoose")
-    const connectionString = process.env.DB_CONNECTION_STRING
+    const connectionString = dbConnectionString
     const User = require("../../models/user")
 
     this.connect = () => {
@@ -133,4 +133,4 @@ function MongoDB() {
     }
 }
 
-module.exports = MongoDB
+module.exports = UserDatabaseMongoDB
