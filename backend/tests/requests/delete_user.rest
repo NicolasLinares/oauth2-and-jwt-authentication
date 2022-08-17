@@ -1,6 +1,0 @@
-
-DELETE http://localhost:3080/api/v1/users/62595d25d83c77366f623182
-
-###
-
-DELETE http://localhost:3080/api/v1/users/noexiste

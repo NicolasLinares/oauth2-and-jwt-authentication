@@ -1,6 +1,0 @@
-
-GET http://localhost:3080/api/v1/users/62769cd232fc600587d57952
-
-###
-
-GET http://localhost:3080/api/v1/users/noexiste
