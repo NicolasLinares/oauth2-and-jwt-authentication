@@ -16,27 +16,34 @@ const passport = require("passport")
 const strategy = require("../services/auth")
 
 // GitHub
-passport.use(strategy.oauth2GithubProvider)
-router.get("/login/github", passport.authenticate("github"))
-router.get("/oauth/github/callback",
-    passport.authenticate("github"),
-    authController.oauthGithubLogin
-)
+
+if (process.env.GITHUB_AUTH_ENABLED) {
+    passport.use(strategy.oauth2GithubProvider)
+    router.get("/login/github", passport.authenticate("github"))
+    router.get("/oauth/github/callback",
+        passport.authenticate("github"),
+        authController.oauthGithubLogin
+    )
+}
 
 // Google
-passport.use(strategy.oauth2GoogleProvider)
-router.get("/login/google", passport.authenticate("google", { scope: ["profile", "email"] }))
-router.get("/oauth/google/callback",
-    passport.authenticate("google"),
-    authController.oauthGoogleLogin
-)
+if (process.env.GOOGLE_AUTH_ENABLED) {
+    passport.use(strategy.oauth2GoogleProvider)
+    router.get("/login/google", passport.authenticate("google", { scope: ["profile", "email"] }))
+    router.get("/oauth/google/callback",
+        passport.authenticate("google"),
+        authController.oauthGoogleLogin
+    )
+}
 
-passport.serializeUser(function(user, done) {
-    done(null, user)
-})
-passport.deserializeUser(function(user, done) {
-    done(null, user)
-})
+if (process.env.GOOGLE_AUTH_ENABLED || process.env.GITHUB_AUTH_ENABLED) {
+    passport.serializeUser(function(user, done) {
+        done(null, user)
+    })
+    passport.deserializeUser(function(user, done) {
+        done(null, user)
+    })
+}
 //#endregion
 
 router.get("/oauth/user", middlewares.isUserAuthenticated, authController.getUserSession)

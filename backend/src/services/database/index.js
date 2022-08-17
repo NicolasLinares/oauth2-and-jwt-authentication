@@ -1,7 +1,9 @@
-//const UserDatabaseMongoDB = require("./userDatabase.mongodb")
 const UserDatabaseMongoDBMock = require("./userDatabase.mongodb.mock")
+const UserDatabaseMongoDB = require("./userDatabase.mongodb")
+const connectionInfo = process.env.DB_CONNECTION_STRING
 
-//const database = new UserDatabaseMongoDB()
-const database = new UserDatabaseMongoDBMock()
+const database = connectionInfo
+    ? new UserDatabaseMongoDB(connectionInfo)
+    : new UserDatabaseMongoDBMock()
 
 module.exports = database
