@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import { CONST } from "config"
-import { authController } from "services/http"
+import { authController, serviceController } from "services/http"
 import { CredentialsLoginForm } from "components/forms"
 import { GoogleOAuth2Button, GitHubOAuth2Button, LinkButton } from 'components/buttons'
 import { useNavigate } from 'react-router-dom'
@@ -22,13 +21,30 @@ function LoginPage({handleLogin}) {
 
     let navigate = useNavigate()
 
+    const [isGoogleAvailable, setIsGoogleAvailable] = useState(false)
+    const [isGithubAvailable, setIsGithubAvailable] = useState(false)
+
     useEffect(() => {
-        let sid = localStorage.getItem("sid")
-        if (!sid) {
-            return
+        let isUserAuthenticated = localStorage.getItem("sid")
+        if (isUserAuthenticated) {
+            handleLogin()
+            return navigate("/home")
         }
-        handleLogin()
-        navigate("/home")
+        
+        serviceController.isOAuth2GoogleAvailable()
+            .then(response => {
+                let { serviceName, isActive }= response.data
+                console.log(`${serviceName} status: ${isActive ? "Available" : "Not available"}`)
+                setIsGoogleAvailable(isActive)
+            })
+
+        serviceController.isOAuth2GithubAvailable()
+            .then(response => {
+                let { serviceName, isActive }= response.data
+                console.log(`${serviceName} status: ${isActive ? "Available" : "Not available"}`)
+                setIsGithubAvailable(isActive)
+            })
+
     }, [])
 
 
@@ -82,10 +98,10 @@ function LoginPage({handleLogin}) {
 
             <h2 className='mb-3'>Log in</h2>
 
-            <GoogleOAuth2Button onClick={startWithGoogle} />
-            <GitHubOAuth2Button onClick={startWithGitHub} />
+            { isGoogleAvailable && <GoogleOAuth2Button onClick={startWithGoogle} /> }
+            { isGithubAvailable && <GitHubOAuth2Button onClick={startWithGitHub} /> }
 
-            <Separator />
+            { (isGoogleAvailable || isGithubAvailable) && <Separator /> }
 
             <CredentialsLoginForm 
                 onSubmit={startWithEmail}

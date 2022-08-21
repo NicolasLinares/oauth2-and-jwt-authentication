@@ -1,44 +1,74 @@
 const logger = require("../services/log")
 
 function validateDatabaseConfiguration() {
-    // MONGODB connection string
-    logger.info("Validating database configuration...")
-    if (!process.env.DB_CONNECTION_STRING) {
-        logger.warn("MongoDB connection string not established. MongoDB mock will be used instead...")
+    logger.info("Database: ")
+
+    // Check MONGODB connection string
+    if (isMongoDBDatabaseConfigured()) {
+        logger.info("   ✅ MongoDB configured!")
+        return
     }
+
+    logger.error("   ❌ MongoDB connection string not established")
+    logger.info("   ✅ Database mock service")
 }
 
-function validateAuthenticationServices() {
-    logger.info("Validating authentication services...")
+function validateAuthConfiguration() {
+    logger.info("Authentication: ")
 
     // JWT authentication
-    logger.info("Validating JWT configuration")
-    if (!process.env.TOKEN_SECRET) {
-        logger.warn("Token secret not established. Setting value for token secret.")
+    if (!isJWTServiceConfigured()) {
         process.env.TOKEN_SECRET = "mytokensecret"
-        logger.info("JWT configuration OK!")
+        logger.info("   ✅ JWT configured!")
     }
-
     // OAuth2.0 - GitHub Provider
-    logger.info("Validating GitHub OAuth 2.0 configuration...")
-    !process.env.GITHUB_AUTH_CLIENT_ID && logger.error("GitHub Client ID not established. Imposible to enable GitHub authentication.")
-    !process.env.GITHUB_AUTH_CLIENT_SECRET && logger.error("GitHub Client Secret not established. Imposible to enable GitHub authentication.")
+    checkGitHubConfigurationProperties()
+    isGitHubOAuth2ServiceConfigured()
+        ? logger.info("   ✅ GitHub OAuth 2.0 configured!")
+        : logger.error("   ❌ GitHub OAuth 2.0 not configured!")
+    // OAuth2.0 - Google Provider
+    checkGoogleConfigurationProperties()
+    isGoogleOAuth2ServiceConfigured()
+        ? logger.info("   ✅ Google OAuth 2.0 configured!")
+        : logger.error("   ❌ Google OAuth 2.0 not configured!")
+}
 
-    if (process.env.GITHUB_AUTH_CLIENT_ID && process.env.GITHUB_AUTH_CLIENT_SECRET) {
-        logger.info("GitHub OAuth 2.0 configuration OK!")
-    }
+function isMongoDBDatabaseConfigured() {
+    return process.env.DB_CONNECTION_STRING != undefined
+}
 
-    // # OAuth2.0 - Google Provider
-    logger.debug("Validating Google OAuth 2.0 configuration...")
-    !process.env.GOOGLE_AUTH_CLIENT_ID && logger.error("Google Client ID not established. Imposible to enable Google authentication.")
-    !process.env.GOOGLE_AUTH_CLIENT_SECRET && logger.error("Google Client Secret not established. Imposible to enable Google authentication.")
+function checkGoogleConfigurationProperties() {
+    !process.env.GOOGLE_AUTH_CLIENT_ID && logger.warn("   ❗️ Google Client ID not established")
+    !process.env.GOOGLE_AUTH_CLIENT_SECRET && logger.warn("   ❗️ Google Client Secret not established")
+    !process.env.CLIENT_GOOGLE_CALLBACK_URL && logger.warn("   ❗️ Google Callback not established")
+}
 
-    if (process.env.GOOGLE_AUTH_CLIENT_ID && process.env.GOOGLE_AUTH_CLIENT_SECRET) {
-        logger.info("Google OAuth 2.0 configuration OK!")
-    }
+function checkGitHubConfigurationProperties() {
+    !process.env.GITHUB_AUTH_CLIENT_ID && logger.warn("   ❗️ GitHub Client ID not established")
+    !process.env.GITHUB_AUTH_CLIENT_SECRET && logger.warn("   ❗️ GitHub Client Secret not established")
+    !process.env.CLIENT_GITHUB_CALLBACK_URL && logger.warn("   ❗️ GitHub Callback not established")
+}
+
+function isGoogleOAuth2ServiceConfigured() {
+    return process.env.GOOGLE_AUTH_CLIENT_ID
+        && process.env.GOOGLE_AUTH_CLIENT_SECRET
+        && process.env.CLIENT_GOOGLE_CALLBACK_URL
+}
+
+function isGitHubOAuth2ServiceConfigured() {
+    return process.env.GITHUB_AUTH_CLIENT_ID
+        && process.env.GITHUB_AUTH_CLIENT_SECRET
+        && process.env.CLIENT_GITHUB_CALLBACK_URL
+}
+
+function isJWTServiceConfigured() {
+    return process.env.TOKEN_SECRET != undefined
 }
 
 module.exports = {
-    validateDatabaseConfiguration, 
-    validateAuthenticationServices
+    validateDatabaseConfiguration,
+    validateAuthConfiguration,
+    isGoogleOAuth2ServiceConfigured,
+    isGitHubOAuth2ServiceConfigured,
+    isJWTServiceConfigured
 }

@@ -1,10 +1,9 @@
 import React from 'react'
-import 'bootstrap-icons/font/bootstrap-icons.css'
 import "./successLoginPage.css"
 
 function SuccessLoginPage(props) {
 
-    let timer = setTimeout(() => {
+    setTimeout(() => {
         window.close()
     }, 2000)
 

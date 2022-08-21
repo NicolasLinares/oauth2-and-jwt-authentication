@@ -16,7 +16,6 @@ function AuthController(database, logger) {
 
     this.login = async (request, response) => {
         const { email, password } = request.body
-
         try {
             const user = await this.database.getUserByEmail(email)
             if (!user) {

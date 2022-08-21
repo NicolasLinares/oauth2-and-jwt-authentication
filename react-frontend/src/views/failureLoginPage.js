@@ -1,10 +1,12 @@
 import React from 'react'
-import 'bootstrap-icons/font/bootstrap-icons.css'
-
 
 import "./failureLoginPage.css"
 
 function FailureLoginPage(props) {
+
+    setTimeout(() => {
+        window.close()
+    }, 2000)
 
     return (
         <div className='App-body'>

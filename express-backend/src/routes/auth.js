@@ -7,38 +7,67 @@ const middlewares = require("../middlewares")
 
 router.post("/login", authController.login)
 router.post("/register", authController.register)
+
 //#endregion
 
 
 //#region OAuth 2.0
 
 const passport = require("passport")
-const strategy = require("../services/auth")
+
+const envValidator = require("../config/config")
+const isGithubCondigured = envValidator.isGitHubOAuth2ServiceConfigured()
+const isGoogleCondigured = envValidator.isGoogleOAuth2ServiceConfigured()
+
+router.get("/login/google/status", (request, response) => {
+    let body = {
+        serviceName: "Google OAuth 2.0",
+        isActive: isGoogleCondigured !== undefined
+    }
+    response.json(body)
+})
+
+router.get("/login/github/status", (request, response) => {
+    let body = {
+        serviceName: "GitHub OAuth 2.0",
+        isActive: isGithubCondigured !== undefined
+    }
+    response.json(body)
+})
 
 // GitHub
-passport.use(strategy.oauth2GithubProvider)
-router.get("/login/github", passport.authenticate("github"))
-router.get("/oauth/github/callback",
-    passport.authenticate("github"),
-    authController.oauthGithubLogin
-)
+if (isGithubCondigured) {
+    const githubProvider = require("../services/auth/oauth2Github")
+    passport.use(githubProvider)
+    router.get("/login/github", passport.authenticate("github"))
+    router.get("/oauth/github/callback",
+        passport.authenticate("github"),
+        authController.oauthGithubLogin
+    )
+}
 
 // Google
-passport.use(strategy.oauth2GoogleProvider)
-router.get("/login/google", passport.authenticate("google", { scope: ["profile", "email"] }))
-router.get("/oauth/google/callback",
-    passport.authenticate("google"),
-    authController.oauthGoogleLogin
-)
+if (isGoogleCondigured) {
+    const googleProvider = require("../services/auth/oauth2Google")
+    passport.use(googleProvider)
+    router.get("/login/google", passport.authenticate("google", { scope: ["profile", "email"] }))
+    router.get("/oauth/google/callback",
+        passport.authenticate("google"),
+        authController.oauthGoogleLogin
+    )
+}
 
-passport.serializeUser(function(user, done) {
-    done(null, user)
-})
-passport.deserializeUser(function(user, done) {
-    done(null, user)
-})
+if (isGithubCondigured || isGoogleCondigured) {
+    passport.serializeUser(function(user, done) {
+        done(null, user)
+    })
+    passport.deserializeUser(function(user, done) {
+        done(null, user)
+    })
+
+    router.get("/oauth/user", middlewares.isUserAuthenticated, authController.getUserSession)
+}
+
 //#endregion
-
-router.get("/oauth/user", middlewares.isUserAuthenticated, authController.getUserSession)
 
 module.exports = router

@@ -2,7 +2,7 @@ import axios from "axios"
 import { CONST } from "config"
 
 
-export const getUserById = async (id, providerId = null) => {
+export const getUserById = (id, providerId = null) => {
     if (!id) {
         throw "id cannot be null or undefined"
     }

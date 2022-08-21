@@ -11,5 +11,9 @@ export const uri = {
     },
     resources: {
         USERS: env.API_SERVER + "/users/"
+    },
+    services: {
+        OAUTH2_GOOGLE_STATUS: env.API_SERVER + "/login/google/status",
+        OAUTH2_GITHUB_STATUS: env.API_SERVER + "/login/github/status"
     }
 }

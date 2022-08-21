@@ -5,8 +5,9 @@ const app = require("./app")
 
 const envValidator = require("./config/config")
 
+logger.info("Checking configuration...")
 envValidator.validateDatabaseConfiguration()
-envValidator.validateAuthenticationServices()
+envValidator.validateAuthConfiguration()
 
 logger.info("Deploying server...")
 
