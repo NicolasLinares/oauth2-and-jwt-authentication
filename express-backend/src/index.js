@@ -17,7 +17,7 @@ database.connect()
 
         const PORT = process.env.SERVER_PORT || 3080
         app.listen(PORT, () => {
-            logger.info(`Server running on port ${PORT}`)
+            logger.info(`Server running on http://localhost:${PORT}`)
         })
 
     }).catch((err) => {
