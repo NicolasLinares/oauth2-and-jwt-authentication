@@ -49,7 +49,7 @@ export const startWithCredentials = async (credentials) => {
 export const startWithOAuth2 = (providerUrl) => {
 
     let timer = null
-    const authWindow = window.open(providerUrl, "_blank", "width: 500px; height: 600px")
+    const authWindow = window.open(providerUrl)
 
     return new Promise((resolve, reject) => {
         timer = setInterval(() => {

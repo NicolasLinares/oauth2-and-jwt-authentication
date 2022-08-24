@@ -22,7 +22,7 @@ function UserInformation ({user}) {
                 <img src={user.picture} className="avatar shadow me-2"/>
             }
             <div className='d-flex flex-column'>
-                <strong>{user.fullname || user.loginName}</strong>
+                <strong>{user.fullname || user.login}</strong>
                 <small>{user.email}</small>
             </div>
         </div>
