@@ -1,18 +1,15 @@
 
-let clientId = process.env.GOOGLE_AUTH_CLIENT_ID
-let clientSecret = process.env.GOOGLE_AUTH_CLIENT_SECRET
-let callback = process.env.CLIENT_GOOGLE_CALLBACK_URL
-
-if (!clientId && !clientSecret && !callback) {
+const envValidator = require("../../config/config")
+if (!envValidator.isGoogleOAuth2ServiceConfigured()) {
     return
 }
 
 const GoogleStrategy = require("passport-google-oauth20").Strategy
 
 const googleProvider = new GoogleStrategy({
-    clientID: clientId,
-    clientSecret: clientSecret,
-    callbackURL: callback,
+    clientID: process.env.GOOGLE_AUTH_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+    callbackURL: process.env.BACK_URI + process.env.CLIENT_GOOGLE_CALLBACK_URL,
 },
 (accessToken, refreshToken, profile, done) => {
     return done(null, profile)

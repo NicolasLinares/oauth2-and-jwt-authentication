@@ -6,6 +6,7 @@ const app = require("./app")
 const envValidator = require("./config/config")
 
 logger.info("Checking configuration...")
+envValidator.validateServerConfiguration()
 envValidator.validateDatabaseConfiguration()
 envValidator.validateAuthConfiguration()
 
@@ -15,11 +16,13 @@ database.connect()
     .then(() => {
         logger.info("Database succesfully connected")
 
-        const PORT = process.env.SERVER_PORT || 3080
+        const PORT = process.env.BACK_PORT
+        const backUri = `http://${process.env.BACK_HOST}:${process.env.BACK_PORT}`
+        
         app.listen(PORT, () => {
-            logger.info(`Server running on http://localhost:${PORT}`)
+            logger.info(`Server running on ${backUri}`)
         })
-
+    
     }).catch((err) => {
         logger.error(err)
     })

@@ -1,5 +1,33 @@
 const logger = require("../services/log")
 
+const DEFAULT_BACK_HOST = "localhost"
+const DEFAULT_BACK_PORT = 3080
+const DEFAULT_FRONT_HOST = "localhost"
+const DEFAULT_FRONT_PORT = 3000
+
+function validateServerConfiguration() {
+    logger.info("Server: ")
+
+    if (!isBackHostConfigured()) {
+        process.env.BACK_HOST = DEFAULT_BACK_HOST
+    }
+    if (!isBackPortConfigured()) {
+        process.env.BACK_PORT = DEFAULT_BACK_PORT
+    }
+
+    if (!isFrontHostConfigured()) {
+        process.env.FRONT_HOST = DEFAULT_FRONT_HOST
+    }
+    if (!isFrontPortConfigured()) {
+        process.env.FRONT_PORT = DEFAULT_FRONT_PORT
+    }
+    const backUri = `http://${process.env.BACK_HOST}:${process.env.BACK_PORT}`
+    const frontUri = `http://${process.env.FRONT_HOST}:${process.env.FRONT_PORT}`
+
+    logger.info(`   ✅ Back uri: ${backUri}`)
+    logger.info(`   ✅ Front uri: ${frontUri}`)
+}
+
 function validateDatabaseConfiguration() {
     logger.info("Database: ")
 
@@ -19,8 +47,9 @@ function validateAuthConfiguration() {
     // JWT authentication
     if (!isJWTServiceConfigured()) {
         process.env.TOKEN_SECRET = "mytokensecret"
-        logger.info("   ✅ JWT configured!")
     }
+    logger.info("   ✅ JWT configured!")
+
     // OAuth2.0 - GitHub Provider
     checkGitHubConfigurationProperties()
     isGitHubOAuth2ServiceConfigured()
@@ -31,6 +60,22 @@ function validateAuthConfiguration() {
     isGoogleOAuth2ServiceConfigured()
         ? logger.info("   ✅ Google OAuth 2.0 configured!")
         : logger.error("   ❌ Google OAuth 2.0 not configured!")
+}
+
+function isBackHostConfigured() {
+    return process.env.BACK_HOST != undefined
+}
+
+function isBackPortConfigured() {
+    return process.env.BACK_PORT != undefined
+}
+
+function isFrontHostConfigured() {
+    return process.env.FRONT_HOST != undefined
+}
+
+function isFrontPortConfigured() {
+    return process.env.FRONT_PORT != undefined
 }
 
 function isMongoDBDatabaseConfigured() {
@@ -66,6 +111,7 @@ function isJWTServiceConfigured() {
 }
 
 module.exports = {
+    validateServerConfiguration,
     validateDatabaseConfiguration,
     validateAuthConfiguration,
     isGoogleOAuth2ServiceConfigured,

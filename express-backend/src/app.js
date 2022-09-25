@@ -10,7 +10,9 @@ const middlewares = require("./middlewares")
 const routes = require("./routes")
 const app = express()
 
-app.use(cors({ origin: process.env.FRONT_HOST || "http://localhost:3000", credentials: true }))
+const frontUri = `http://${process.env.FRONT_HOST}:${process.env.FRONT_PORT}`
+
+app.use(cors({ origin: frontUri, credentials: true }))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.json())
