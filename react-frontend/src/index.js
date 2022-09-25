@@ -5,7 +5,7 @@ import App from './App'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
-let avoidRenderingTwice = false
+let avoidRenderingTwice = true
 
 if (avoidRenderingTwice) {
     root.render(<App />)

@@ -1,4 +1,4 @@
-# ExpressBackend
+# Express Backend
 
 ## Versions:
 - **SO**: macOS 12.4
@@ -13,7 +13,7 @@
     ```powershell
         npm install
     ```
-    
+
 2. Basic deploy:
 
     ```powershell
@@ -82,7 +82,7 @@ FAILED_LOGIN_REDIRECT=http://<FRONT_HOST>:<FRONT_PORT>/login/failed
 
 ### 2. Setup MongoDB connection string:
 
-> NOTE: The database is mocked for testing so you can skip this configuration for the time being, unless you need persistance or just understand how it works.
+> **NOTE**: The database is mocked for testing so you can skip this configuration for the time being, unless you need persistance or just understand how it works.
 
 1. Go to [MongoDB](https://www.mongodb.com/), create a database and get the connection string.
 
@@ -141,8 +141,6 @@ DB_CONNECTION_STRING=mongodb+srv://admin:<password>@<your.app>.2amgq.mongodb.net
     GITHUB_AUTH_CLIENT_ID=
     GITHUB_AUTH_CLIENT_SECRET=
     ```
-
-
 
 ### 4. Setup Google OAuth 2.0:
 

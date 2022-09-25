@@ -1,8 +1,10 @@
 # Authentication with MERN stack
 
-This project implements a login with two authentication methods, OAuth 2.0 and JSON Web Token (JWT), using a MERN stack.
-  
-> The user can log in with credentials, or much better, use Google or GitHub to avoid the sign-in process.
+![](./assets/oauth2-demo.gif)
+
+This project implements a login with two authentication methods. First, the easy way to avoid the sign-in process, using OAuth 2.0 authentication with Google or GitHub. On the other hand, creating an account and then using the credentials.
+
+After login, JSON Web Token (JWT) is used for session management.
 
 
 ## Backend
@@ -18,20 +20,18 @@ This project implements a login with two authentication methods, OAuth 2.0 and J
 
 </p>
 
-Authentication features:
+* Authentication features:
+  * Sign in with credentials (fullname, email and password).
+  * Log in with credentials.
+  * Log in with **Google**.
+  * Log in with **GitHub**.
 
-* Sign in with credentials (fullname, email and password).
-* Log in with credentials.
-* Log in with **Google**.
-* Log in with **GitHub**.
+* **JSON Web Token** to manage users sessions.
 
-**JSON Web Token** to manage users sessions.
-
-Logging:
-
-* Deploying configuration.
-* Requests.
-* Authentication process.
+* Logging:
+  * Deploying configuration.
+  * HTTP requests.
+  * Authentication process by user.
 
 ## Frontend
 
