@@ -27,6 +27,12 @@ Authentication features:
 
 **JSON Web Token** to manage users sessions.
 
+Logging:
+
+* Deploying configuration.
+* Requests.
+* Authentication process.
+
 ## Frontend
 
 <p>
