@@ -1,4 +1,3 @@
-require("dotenv").config()
 const logger = require("./services/log/")
 const database = require("./services/database")
 const app = require("./app")
@@ -17,7 +16,7 @@ database.connect()
         logger.info("Database succesfully connected")
 
         const PORT = process.env.BACK_PORT
-        const backUri = `http://${process.env.BACK_HOST}:${process.env.BACK_PORT}`
+        const backUri = `http://${process.env.BACK_HOST}:${PORT}`
         
         app.listen(PORT, () => {
             logger.info(`Server running on ${backUri}`)

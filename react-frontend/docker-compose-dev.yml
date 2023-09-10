@@ -1,0 +1,11 @@
+version: "1.0.0"
+services:
+  web-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/home/app
+      - /home/app/node_modules
